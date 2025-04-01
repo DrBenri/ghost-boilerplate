@@ -58,18 +58,18 @@
     <footer class="footer">
         <div class="block">
             <div class="logo">
-                <img class="group-2" src="{{asset "images/group-20.svg"}}" alt="Dr.Benri Logo" />
+                {{> "icons/small-logo"}}
                 <div class="dr-benri">Dr.Benri株式会社</div>
             </div>
             <div class="frame-28">
                 <div class="follow-us">Follow us</div>
                 <div class="socials">
                     <a href="https://twitter.com/youraccount" target="_blank" rel="noopener">
-                        <img class="mage-x-square" src="{{asset "images/mage-x-square0.svg"}}" alt="Twitter X" />
+                        {{> "icons/x"}}
                     </a>
                     <a href="https://line.me/youraccount" target="_blank" rel="noopener">
                         <div class="mage-line">
-                            <img class="group" src="{{asset "images/group0.svg"}}" alt="LINE" />
+                            {{> "icons/line"}}
                         </div>
                     </a>
                 </div>
@@ -78,11 +78,11 @@
                 <div class="_2024-asco">2024年ASCO</div>
                 <div class="container">
                     <a href="{{@site.url}}/copyright" class="item">
-                        <img class="arrow-right" src="{{asset "images/arrow-right0.svg"}}" alt="Arrow" />
+                        {{> "icons/arrow-right"}}
                         <div class="div">著作権について</div>
                     </a>
                     <a href="{{@site.url}}/privacy-policy" class="item">
-                        <img class="arrow-right2" src="{{asset "images/arrow-right1.svg"}}" alt="Arrow" />
+                        {{> "icons/arrow-right"}}
                         <div class="div">プライバシーポリシー</div>
                     </a>
                 </div>
@@ -121,6 +121,100 @@ $(document).ready(function () {
 
 {{!-- Ghost outputs required functional scripts with this tag - it should always be the last thing before the closing body tag --}}
 {{ghost_foot}}
+
+<!-- Fullscreen Confirmation Popup -->
+<div id="confirmPopup" class="confirmation-popup">
+    <!-- For desktop view -->
+    <div class="popup-desktop-container" id="popup-desktop-container">
+        <h2>医療従事者専用サイトの免責事項</h2>
+        <p>このサイトは医療従事者を対象としています。臨床試験のレビュー、</p>
+        <p>解説、その他の医療情報などを含むサイトのコンテンツは情報提供のみを目的と</p>
+        <p>しています。このサイトは登録を必要とせず、製品の是認や宣伝は致しません。</p>
+        
+        <p>臨床データは日本の規制当局が承認した使用目的とは異なる場合がございます。</p>
+        <p>情報を解釈いただく際は、自らの判断を用いてください。</p>
+        
+        <p>本サイトのコンテンツに基づいて下された決断について、当社は一切の責任を</p>
+        <p>負いません。本サイトへアクセスをすることで、ご自身が医療従事者である</p>
+        <p>確認と当社のプライバシーポリシーに同意されることとみなされます。</p>
+        <h4>あなたは医療関係者ですか？</h4>
+        <div class="popup-buttons">
+            <button onclick="confirmYes()" class="btn-yes">はい</button>
+            <button onclick="confirmNo()" class="btn-no">いいえ</button>
+        </div>
+    </div>
+                                                                                                                           
+    <!-- For mobile view -->
+    <div class="popup-responsive-container" id="popup-responsive-container">
+        <h4>医療従事者専用サイトの免責事項</h4>
+        <p>このサイトは医療従事者を対象としています。</p>
+        <p>臨床試験のレビュー、解説、</p>
+        <p>その他の医療情報などを含む</p>
+        <p>サイトのコンテンツは情報提供のみを目的と</p>
+        <p>しています。このサイトは登録を必要とせず、</p>
+        <p>製品の是認や宣伝は致しません。</p>
+        <p>臨床データは日本の規制当局が承認した</p>
+        <p>使用目的とは異なる場合がございます。</p>
+        <p>情報を解釈いただく際は、自らの判断を</p>
+        <p>用いてください。</p>
+        <p>本サイトのコンテンツに基づいて下された</p>
+        <p>決断について、当社は一切の責任を負いません。</p>
+        <p>本サイトへアクセスをすることで、</p>
+        <p>ご自身が医療従事者である確認と</p>
+        <p>当社のプライバシーポリシーに同意されることと</p>
+        <p>みなされます。</p>
+        <h5>あなたは医療関係者ですか？</h5>
+        <div class="popup-buttons">
+            <button onclick="confirmYes()" class="btn-yes">はい</button>
+            <button onclick="confirmNo()" class="btn-no">いいえ</button>
+        </div>
+    </div>
+                                                                                                                           
+    {{#if @site.logo}}
+        <img src="{{@site.logo}}" width="200" loading="lazy" alt="{{@site.title}}" class="popup-logo">
+    {{else}}
+        <div class="popup-logo-text">{{@site.title}}</div>
+    {{/if}}
+</div>
+
+<!-- JavaScript for confirmation popup -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Show popup on every page load
+        document.getElementById('confirmPopup').style.display = 'flex';
+        
+        // Handle responsive display
+        function handlePopupResponsive() {
+            var desktopContainer = document.getElementById('popup-desktop-container');
+            var mobileContainer = document.getElementById('popup-responsive-container');
+            
+            if (window.innerWidth <= 768) {
+                desktopContainer.style.display = 'none';
+                mobileContainer.style.display = 'block';
+            } else {
+                desktopContainer.style.display = 'block';
+                mobileContainer.style.display = 'none';
+            }
+        }
+        
+        // Call on load and resize
+        handlePopupResponsive();
+        window.addEventListener('resize', handlePopupResponsive);
+    });
+    
+    // Function when user clicks "Yes"
+    function confirmYes() {
+        document.getElementById('confirmPopup').style.display = 'none';
+        // You can add analytics tracking here if needed
+    }
+    
+    // Function when user clicks "No"
+    function confirmNo() {
+        // Redirect to a different site or show a message
+        alert('このサイトは医療従事者専用です。');
+        window.location.href = 'https://www.google.com'; // Redirect to Google or another page
+    }
+</script>
 
 </body>
 </html>
