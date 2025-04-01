@@ -16,6 +16,14 @@
     {{!-- Theme assets - use the {asset} helper to reference styles & scripts,
     this will take care of caching and cache-busting automatically --}}
     <link rel="stylesheet" type="text/css" href="{{asset "built/screen.css"}}" />
+    
+    {{!-- Google Fonts - Noto Sans JP --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    {{!-- Custom CSS for header styling --}}
+    <link rel="stylesheet" type="text/css" href="{{asset "css/custom.css"}}" />
 
     {{!-- This tag outputs all your advanced SEO meta, structured data, and other important settings,
     it should always be the last tag before the closing head tag --}}
@@ -25,50 +33,19 @@
 <body class="{{body_class}} is-head-{{#match @custom.navigation_layout "Logo on cover"}}left-logo{{else match @custom.navigation_layout "Logo in the middle"}}middle-logo{{else}}stacked{{/match}}{{#match @custom.title_font "=" "Elegant serif"}} has-serif-title{{/match}}{{#match @custom.body_font "=" "Modern sans-serif"}} has-sans-body{{/match}}{{#if @custom.show_publication_cover}} has-cover{{/if}}">
 <div class="viewport">
 
-    <header id="gh-head" class="gh-head outer{{#match @custom.header_style "Hidden"}} is-header-hidden{{/match}}">
-        <div class="gh-head-inner inner">
-            <div class="gh-head-brand">
-                <a class="gh-head-logo{{#unless @site.logo}} no-image{{/unless}}" href="{{@site.url}}">
-                    {{#if @site.logo}}
-                        <img src="{{@site.logo}}" alt="{{@site.title}}">
-                    {{else}}
-                        {{@site.title}}
-                    {{/if}}
-                </a>
-                <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search>{{> "icons/search"}}</button>
-                <button class="gh-burger" aria-label="Main Menu"></button>
-            </div>
-
-            <nav class="gh-head-menu">
+    <header id="gh-head" class="top-header">
+        <div class="logo">
+            {{#if @site.logo}}
+                <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
+            {{else}}
+                <div class="image-132 site-title">{{@site.title}}</div>
+            {{/if}}
+        </div>
+        <div class="frame-1">
+            <nav class="navigation-container">
                 {{navigation}}
-                {{#unless @site.members_enabled}}
-                    {{#match @custom.navigation_layout "Stacked"}}
-                        <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search>{{> "icons/search"}}</button>
-                    {{/match}}
-                {{/unless}}
             </nav>
-
-            <div class="gh-head-actions">
-                {{#unless @site.members_enabled}}
-                    {{^match @custom.navigation_layout "Stacked"}}
-                        <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search>{{> "icons/search"}}</button>
-                    {{/match}}
-                {{else}}
-                    <button class="gh-search gh-icon-btn" aria-label="Search this site" data-ghost-search>{{> "icons/search"}}</button>
-                    <div class="gh-head-members">
-                        {{#unless @member}}
-                            {{#unless @site.members_invite_only}}
-                                <a class="gh-head-link" href="#/portal/signin" data-portal="signin">Sign in</a>
-                                <a class="gh-head-button" href="#/portal/signup" data-portal="signup">Subscribe</a>
-                            {{else}}
-                                <a class="gh-head-button" href="#/portal/signin" data-portal="signin">Sign in</a>
-                            {{/unless}}
-                        {{else}}
-                            <a class="gh-head-button" href="#/portal/account" data-portal="account">Account</a>
-                        {{/unless}}
-                    </div>
-                {{/unless}}
-            </div>
+            <div class="medical-info-link">医療関係者向け情報サイト</div>
         </div>
     </header>
 
@@ -77,14 +54,43 @@
         {{{body}}}
     </div>
 
-    {{!-- The global footer at the very bottom of the screen --}}
-    <footer class="site-footer outer">
-        <div class="inner">
-            <section class="copyright"><a href="{{@site.url}}">{{@site.title}}</a> &copy; {{date format="YYYY"}}</section>
-            <nav class="site-footer-nav">
-                {{navigation type="secondary"}}
-            </nav>
-            <div class="gh-powered-by"><a href="https://ghost.org/" target="_blank" rel="noopener">Powered by Ghost</a></div>
+    {{!-- Custom footer with new design --}}
+    <footer class="footer">
+        <div class="block">
+            <div class="logo">
+                <img class="group-2" src="{{asset "images/group-20.svg"}}" alt="Dr.Benri Logo" />
+                <div class="dr-benri">Dr.Benri株式会社</div>
+            </div>
+            <div class="frame-28">
+                <div class="follow-us">Follow us</div>
+                <div class="socials">
+                    <a href="https://twitter.com/youraccount" target="_blank" rel="noopener">
+                        <img class="mage-x-square" src="{{asset "images/mage-x-square0.svg"}}" alt="Twitter X" />
+                    </a>
+                    <a href="https://line.me/youraccount" target="_blank" rel="noopener">
+                        <div class="mage-line">
+                            <img class="group" src="{{asset "images/group0.svg"}}" alt="LINE" />
+                        </div>
+                    </a>
+                </div>
+            </div>
+            <div class="frame-29">
+                <div class="_2024-asco">2024年ASCO</div>
+                <div class="container">
+                    <a href="{{@site.url}}/copyright" class="item">
+                        <img class="arrow-right" src="{{asset "images/arrow-right0.svg"}}" alt="Arrow" />
+                        <div class="div">著作権について</div>
+                    </a>
+                    <a href="{{@site.url}}/privacy-policy" class="item">
+                        <img class="arrow-right2" src="{{asset "images/arrow-right1.svg"}}" alt="Arrow" />
+                        <div class="div">プライバシーポリシー</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="line-1"></div>
+        <div class="copyright">
+            <div class="copyright-2025-dr-benri">Copyright © {{date format="YYYY"}} Dr.Benri株式会社</div>
         </div>
     </footer>
 

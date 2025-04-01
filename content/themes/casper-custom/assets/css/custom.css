@@ -1,0 +1,410 @@
+/* Custom Header Styling */
+.top-header,
+.top-header * {
+  box-sizing: border-box;
+}
+
+.top-header {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 0.5px 0px;
+  padding: 16px 80px 16px 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 80px;
+  position: relative;
+  background-color: #FFFFFF;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  flex-shrink: 0;
+  width: 176.53px;
+  height: 44px;
+  position: relative;
+}
+
+.image-132 {
+  width: 176.53px;
+  height: 44px;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  object-fit: contain;
+  aspect-ratio: 176.53/44;
+}
+
+/* Logo text fallback styling */
+.image-132.site-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #000000;
+}
+
+.frame-1 {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* Navigation container styling */
+.navigation-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Style the navigation list */
+.navigation-container ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Style for list items */
+.navigation-container ul li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Style for navigation links */
+.navigation-container ul li a {
+  color: var(--neutral-06, #4d4d4d);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+}
+
+/* Hover state for navigation links */
+.navigation-container ul li a:hover {
+  color: #113EF9;
+  transition: color 0.2s ease;
+}
+
+/* Style for the medical info link */
+.medical-info-link {
+  color: var(--neutral-06, #4d4d4d);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+}
+
+.medical-info-link:hover {
+  color: #113EF9;
+  transition: color 0.2s ease;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 1024px) {
+  .top-header {
+    padding: 16px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    padding: 16px 20px;
+  }
+  
+  .frame-1 {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .frame-1 {
+    display: none;
+  }
+  
+  .top-header {
+    justify-content: center;
+  }
+}
+
+/* Footer styling */
+.footer,
+.footer * {
+  box-sizing: border-box;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  width: 100%;
+}
+
+.block {
+  background: var(--primary-07, #222e60);
+  padding: 16px 80px 16px 80px;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 212px;
+  position: relative;
+  width: 100%;
+}
+
+.block .logo {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  left: 80px;
+  top: 40px;
+}
+
+.group-2 {
+  flex-shrink: 0;
+  width: 60px;
+  height: 60px;
+  position: relative;
+  overflow: visible;
+}
+
+.dr-benri {
+  color: var(--neutral-01, #f8f8f8);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 24px;
+  line-height: 36px;
+  font-weight: 500;
+  position: relative;
+}
+
+.frame-28 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 308px;
+  position: absolute;
+  left: 728.11px;
+  top: 58px;
+}
+
+.follow-us {
+  color: var(--neutral-01, #f8f8f8);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 16px;
+  line-height: 36px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+
+.socials {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.socials a {
+  text-decoration: none;
+  display: block;
+}
+
+.mage-x-square {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: visible;
+  aspect-ratio: 1;
+}
+
+.mage-line {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1;
+}
+
+.group {
+  height: auto;
+  position: absolute;
+  left: 3.33px;
+  top: 3.33px;
+  overflow: visible;
+}
+
+.frame-29 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 308px;
+  position: absolute;
+  left: 1052.11px;
+  top: 58px;
+}
+
+._2024-asco {
+  color: var(--neutral-01, #f8f8f8);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 16px;
+  line-height: 36px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.item {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+  text-decoration: none;
+}
+
+.arrow-right, .arrow-right2 {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  position: relative;
+  overflow: visible;
+  aspect-ratio: 1;
+}
+
+.div {
+  color: var(--neutral-01, #f8f8f8);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 18px;
+  line-height: 32px;
+  font-weight: 500;
+  position: relative;
+}
+
+.line-1 {
+  margin-top: -1px;
+  border-style: solid;
+  border-color: var(--neutral-04, #808080);
+  border-width: 1px 0 0 0;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 1280px;
+  height: 0px;
+  position: relative;
+}
+
+.copyright {
+  background: var(--primary-07, #222e60);
+  padding: 0px 80px 0px 80px;
+  display: flex;
+  flex-direction: row;
+  gap: 0px;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 60px;
+  position: relative;
+  width: 100%;
+}
+
+.copyright-2025-dr-benri {
+  color: var(--neutral-02, #cacaca);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+}
+
+/* Responsive adjustments for footer */
+@media (max-width: 1280px) {
+  .frame-28 {
+    left: 55%;
+  }
+  
+  .frame-29 {
+    left: 75%;
+  }
+}
+
+@media (max-width: 992px) {
+  .block {
+    height: auto;
+    padding: 40px;
+  }
+  
+  .block .logo, .frame-28, .frame-29 {
+    position: relative;
+    left: 0;
+    top: 0;
+    margin-bottom: 30px;
+  }
+  
+  .block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .block {
+    padding: 20px;
+  }
+  
+  .copyright {
+    padding: 0 20px;
+  }
+}
