@@ -35,11 +35,13 @@
 
     <header id="gh-head" class="top-header">
         <div class="logo">
-            {{#if @site.logo}}
-                <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
-            {{else}}
-                <div class="image-132 site-title">{{@site.title}}</div>
-            {{/if}}
+            <a href="{{@site.url}}" class="logo-link">
+                {{#if @site.logo}}
+                    <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
+                {{else}}
+                    <div class="image-132 site-title">{{@site.title}}</div>
+                {{/if}}
+            </a>
         </div>
         <div class="frame-1">
             <nav class="navigation-container">
@@ -180,8 +182,14 @@ $(document).ready(function () {
 <!-- JavaScript for confirmation popup -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Show popup on every page load
-        document.getElementById('confirmPopup').style.display = 'flex';
+        // Check if user has already confirmed in this session
+        if (!sessionStorage.getItem('isHealthcareProfessional')) {
+            // Show popup only if not confirmed yet
+            document.getElementById('confirmPopup').style.display = 'flex';
+            
+            // Add class to prevent body scrolling
+            document.body.classList.add('popup-open');
+        }
         
         // Handle responsive display
         function handlePopupResponsive() {
@@ -189,11 +197,11 @@ $(document).ready(function () {
             var mobileContainer = document.getElementById('popup-responsive-container');
             
             if (window.innerWidth <= 768) {
-                desktopContainer.style.display = 'none';
-                mobileContainer.style.display = 'block';
+                if (desktopContainer) desktopContainer.style.display = 'none';
+                if (mobileContainer) mobileContainer.style.display = 'block';
             } else {
-                desktopContainer.style.display = 'block';
-                mobileContainer.style.display = 'none';
+                if (desktopContainer) desktopContainer.style.display = 'block';
+                if (mobileContainer) mobileContainer.style.display = 'none';
             }
         }
         
@@ -204,7 +212,15 @@ $(document).ready(function () {
     
     // Function when user clicks "Yes"
     function confirmYes() {
+        // Save confirmation to session storage
+        sessionStorage.setItem('isHealthcareProfessional', 'true');
+        
+        // Hide popup
         document.getElementById('confirmPopup').style.display = 'none';
+        
+        // Remove body scroll lock
+        document.body.classList.remove('popup-open');
+        
         // You can add analytics tracking here if needed
     }
     
