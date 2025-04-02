@@ -9,13 +9,13 @@ into the {body} of the default.hbs template --}}
       <div class="banner-image-wrapper">
         {{#if @site.cover_image}}
           <img class="banner-image"
-              srcset="{{img_url @site.cover_image size="s"}} 300w,
-                      {{img_url @site.cover_image size="m"}} 600w,
+                srcset="{{img_url @site.cover_image size="s"}} 300w,
+                        {{img_url @site.cover_image size="m"}} 600w,
                       {{img_url @site.cover_image size="l"}} 1000w"
               sizes="(max-width: 576px) 104px, 330px"
               src="{{img_url @site.cover_image size="m"}}"
-              alt="{{@site.title}}"
-          />
+                alt="{{@site.title}}"
+            />
         {{else}}
           <div class="banner-image-placeholder"></div>
         {{/if}}
@@ -45,14 +45,30 @@ into the {body} of the default.hbs template --}}
   </div>
 </div>
 
-{{!-- The main content area --}}
+{{!-- The main content area with new design --}}
 <main id="site-main" class="site-main outer">
-<div class="inner posts">
+<div class="inner">
 
-    <div class="post-feed">
+    <div class="container">
+        <div class="post-feed-header">
+            <div class="post-feed-header-content">
+                <div class="post-feed-title">ASCO 2024 要約一覧</div>
+            </div>
+        </div>
+        
         {{#foreach posts}}
-            {{!-- The tag below includes the markup for each post - partials/post-card.hbs --}}
-            {{> "post-card"}}
+            <div class="post-item">
+                <div class="post-date">{{date published_at format="YYYY年MM月DD日"}}</div>
+                <div class="post-content">
+                    <div class="post-title">{{title}}</div>
+                    <div class="post-excerpt">
+                        {{excerpt}}
+                    </div>
+                    <div class="read-more-wrapper">
+                        <a href="{{url}}" class="read-more-link">全文を読む</a>
+                    </div>
+                </div>
+            </div>
         {{/foreach}}
     </div>
 

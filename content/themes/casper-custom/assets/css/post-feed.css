@@ -1,0 +1,307 @@
+.container,
+.container * {
+  box-sizing: border-box;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.title {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 1px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.content {
+  border-style: solid;
+  border-color: var(--primary-04, #113ef9);
+  border-width: 0px 0px 3px 0px;
+  padding: 12px 0px 12px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.title2 {
+  color: var(--neutral-08, #1a1a1a);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 500;
+  position: relative;
+}
+.frame-12, .frame-13, .frame-14, [class^="frame-"] {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 0.5px 0px;
+  padding: 24px 0px 24px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+._2024-11-23 {
+  color: var(--neutral-04, #808080);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 18px;
+  line-height: 32px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+}
+.frame-11 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.destiny-breast-06 {
+  color: var(--neutral-08, #1a1a1a);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.destiny-breast-06-m-bc-her-2-her-2-td-xd {
+  color: var(--neutral-05, #5e5e5e);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+}
+.frame-3 {
+  padding: 8px 0px 8px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.div {
+  color: var(--primary-04, #113ef9);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  text-decoration: underline;
+  position: relative;
+}
+.post-feed-header {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 1px 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  justify-content: center;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.post-feed-header-content {
+  border-style: solid;
+  border-color: var(--primary-04, #113ef9);
+  border-width: 0px 0px 3px 0px;
+  padding: 12px 0px 12px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+.post-feed-title {
+  color: var(--neutral-08, #1a1a1a);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 500;
+  position: relative;
+}
+.post-item {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 0.5px 0px;
+  padding: 24px 0px 24px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.post-date {
+  color: var(--neutral-04, #808080);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 18px;
+  line-height: 32px;
+  font-weight: 400;
+  position: relative;
+  width: 170px;
+}
+.post-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex: 1;
+  position: relative;
+}
+.post-title {
+  color: var(--neutral-08, #1a1a1a);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 20px;
+  line-height: 32px;
+  font-weight: 500;
+  position: relative;
+  align-self: stretch;
+}
+.post-excerpt {
+  color: var(--neutral-05, #5e5e5e);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+}
+.read-more-wrapper {
+  padding: 8px 0px 8px 0px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+}
+.read-more-link {
+  color: var(--primary-04, #113ef9);
+  text-align: left;
+  font-family: "NotoSansJp-Medium", sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  text-decoration: underline;
+  position: relative;
+}
+
+/* Mobile styles - apply when screen width is 768px or less */
+@media (max-width: 768px) {
+  .title2 {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  
+  .frame-12, .frame-13, .frame-14, [class^="frame-"] {
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 0px 24px 0px;
+  }
+  
+  ._2024-11-23 {
+    font-size: 12px;
+    line-height: 20px;
+    width: 100px;
+  }
+  
+  .frame-11 {
+    align-self: stretch;
+    flex-shrink: 0;
+    flex: none;
+  }
+  
+  .destiny-breast-06 {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  
+  .destiny-breast-06-m-bc-her-2-her-2-td-xd {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .div {
+    font-size: 14px;
+  }
+  
+  .post-feed-title {
+    font-size: 20px;
+    line-height: 24px;
+  }
+  
+  .post-item {
+    flex-direction: column;
+    gap: 12px;
+    padding: 24px 0px 24px 0px;
+  }
+  
+  .post-date {
+    font-size: 12px;
+    line-height: 20px;
+    width: 100px;
+  }
+  
+  .post-content {
+    align-self: stretch;
+    flex-shrink: 0;
+    flex: none;
+  }
+  
+  .post-title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  
+  .post-excerpt {
+    font-size: 14px;
+    line-height: 20px;
+  }
+  
+  .read-more-link {
+    font-size: 14px;
+  }
+}
