@@ -70,7 +70,7 @@ const HealthcarePopup = {
     confirmNo: function() {
         // Redirect to a different site or show a message
         alert('このサイトは医療従事者専用です。');
-        window.location.href = 'https://www.google.com'; // Redirect to Google or another page
+        window.location.href = 'https://www.drbenri.com'; // Redirect to Google or another page
     }
 };
 
