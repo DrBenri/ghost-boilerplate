@@ -34,21 +34,21 @@
 <body class="{{body_class}} is-head-{{#match @custom.navigation_layout "Logo on cover"}}left-logo{{else match @custom.navigation_layout "Logo in the middle"}}middle-logo{{else}}stacked{{/match}}{{#match @custom.title_font "=" "Elegant serif"}} has-serif-title{{/match}}{{#match @custom.body_font "=" "Modern sans-serif"}} has-sans-body{{/match}}{{#if @custom.show_publication_cover}} has-cover{{/if}}">
 <div class="viewport">
 
-    <header id="gh-head" class="top-header">
-        <div class="logo">
+    <header id="gh-head" class="site-header">
+        <div class="site-logo">
             <a href="{{@site.url}}" class="logo-link">
                 {{#if @site.logo}}
-                    <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
+                    <img class="site-logo-image" src="{{@site.logo}}" alt="{{@site.title}}" />
                 {{else}}
-                    <div class="image-132 site-title">{{@site.title}}</div>
+                    <div class="site-logo-text">{{@site.title}}</div>
                 {{/if}}
             </a>
         </div>
-        <div class="frame-1">
+        <div class="header-navigation-wrapper">
             <nav class="navigation-container">
                 {{navigation}}
             </nav>
-            <div class="medical-info-link">医療関係者向け情報サイト</div>
+            <div class="medical-info-text">医療関係者向け情報サイト</div>
         </div>
     </header>
 
@@ -58,42 +58,42 @@
     </div>
 
     {{!-- Custom footer with new design --}}
-    <footer class="footer">
-        <div class="block">
-            <div class="logo">
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-logo">
                 {{> "icons/small-logo"}}
-                <div class="dr-benri">Dr.Benri株式会社</div>
+                <div class="company-name">Dr.Benri株式会社</div>
             </div>
-            <div class="frame-28">
-                <div class="follow-us">Follow us</div>
-                <div class="socials">
+            <div class="footer-column footer-column-social">
+                <div class="social-title">Follow us</div>
+                <div class="social-icons">
                     <a href="https://twitter.com/youraccount" target="_blank" rel="noopener">
                         {{> "icons/x"}}
                     </a>
                     <a href="https://line.me/youraccount" target="_blank" rel="noopener">
-                        <div class="mage-line">
+                        <div class="icon-line-wrapper">
                             {{> "icons/line"}}
                         </div>
                     </a>
                 </div>
             </div>
-            <div class="frame-29">
-                <div class="_2024-asco">2024年ASCO</div>
-                <div class="container">
-                    <a href="{{@site.url}}/copyright" class="item">
+            <div class="footer-column footer-column-links">
+                <div class="footer-section-title">2024年ASCO</div>
+                <div class="footer-links">
+                    <a href="{{@site.url}}/copyright" class="footer-link">
                         {{> "icons/arrow-right"}}
-                        <div class="div">著作権について</div>
+                        <div class="link-text">著作権について</div>
                     </a>
-                    <a href="{{@site.url}}/privacy-policy" class="item">
+                    <a href="{{@site.url}}/privacy-policy" class="footer-link">
                         {{> "icons/arrow-right"}}
-                        <div class="div">プライバシーポリシー</div>
+                        <div class="link-text">プライバシーポリシー</div>
                     </a>
                 </div>
             </div>
         </div>
-        <div class="line-1"></div>
-        <div class="copyright">
-            <div class="copyright-2025-dr-benri">Copyright © {{date format="YYYY"}} Dr.Benri株式会社</div>
+        <div class="footer-divider"></div>
+        <div class="copyright-container">
+            <div class="copyright-text">Copyright © {{date format="YYYY"}} Dr.Benri株式会社</div>
         </div>
     </footer>
 

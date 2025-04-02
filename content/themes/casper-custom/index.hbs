@@ -4,11 +4,11 @@ into the {body} of the default.hbs template --}}
 
 <div class="banner">
   <div class="header"></div>
-  <div class="header2">
-    <div class="content">
-      <div class="img">
+  <div class="banner-container">
+    <div class="banner-content-wrapper">
+      <div class="banner-image-wrapper">
         {{#if @site.cover_image}}
-          <img class="image-130"
+          <img class="banner-image"
               srcset="{{img_url @site.cover_image size="s"}} 300w,
                       {{img_url @site.cover_image size="m"}} 600w,
                       {{img_url @site.cover_image size="l"}} 1000w"
@@ -17,11 +17,11 @@ into the {body} of the default.hbs template --}}
               alt="{{@site.title}}"
           />
         {{else}}
-          <div class="image-130-placeholder"></div>
+          <div class="banner-image-placeholder"></div>
         {{/if}}
-        <div class="frame-5">
-          <div class="div">佐治重衡先生</div>
-          <div class="div2">
+        <div class="banner-image-caption">
+          <div class="banner-person-name">佐治重衡先生</div>
+          <div class="banner-person-title">
             福島県立医科大学 医学部
             <br />
             腫瘍内科学講座 主任教授
@@ -29,19 +29,19 @@ into the {body} of the default.hbs template --}}
         </div>
       </div>
     </div>
-    <div class="frame-6">
-      <div class="frame-8">
-        <div class="frame-4">
-          <div class="div3">解説</div>
+    <div class="banner-content">
+      <div class="banner-meta">
+        <div class="banner-tag-container">
+          <div class="banner-tag">解説</div>
         </div>
-        <div class="_2024-11-23">{{date format="YYYY年MM月DD日"}}</div>
+        <div class="banner-date">{{date format="YYYY年MM月DD日"}}</div>
       </div>
-      <div class="frame-7">
-        <div class="_2024-asco">2024年ASCO乳がん臨床試験要約</div>
-        <div class="div4">佐治重衡先生の解説</div>
+      <div class="banner-title-container">
+        <div class="banner-title">2024年ASCO乳がん臨床試験要約</div>
+        <div class="banner-subtitle">佐治重衡先生の解説</div>
       </div>
     </div>
-    <img class="group-1" src="{{asset "images/group-10.svg"}}" alt="Background decoration" />
+    <img class="banner-decoration" src="{{asset "images/group-10.svg"}}" alt="Background decoration" />
   </div>
 </div>
 
