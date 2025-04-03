@@ -1,4 +1,64 @@
+# Node dependencies
 /node_modules
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+package-lock.json
+yarn.lock
+
+# Ghost specific
 /content/logs/*.log
+content/data/
+content/images/
+content/files/
+content/logs/
+content/themes/casper-custom/assets/built/
+.ghost-cli
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+ghost-dev.db
+content/data/ghost-dev.db
+
+# Environment & Config
 .env
+.env.*
+!.env.example
+config.*.json
+!config.example.json
 config.production.json
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.history/
+
+# Build artifacts
+dist/
+build/
+coverage/
+.nyc_output/
+
+# Docker
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+
+# Logs
+logs
+*.log

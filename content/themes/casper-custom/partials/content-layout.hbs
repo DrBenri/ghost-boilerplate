@@ -1,0 +1,172 @@
+<div class="wrapper">
+  <div class="column">
+    <div class="title">
+      <div class="_2024-11-23">{{date format="YYYY年MM月DD日"}}</div>
+    </div>
+    <div class="menu">
+      <div class="div">目次</div>
+      <div class="container">
+        <div class="item">
+          <img class="arrow-right" src="{{asset "images/arrow-right.svg"}}" />
+          <div class="div2">要約</div>
+        </div>
+        <div class="item">
+          <img class="arrow-right2" src="{{asset "images/arrow-right.svg"}}" />
+          <div class="div2">解説</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="content-container">
+    <div class="content-row">
+      <div class="column2">
+        <div class="block">
+          <div class="title2">
+            <div class="content">
+              <div class="title3">要約</div>
+            </div>
+          </div>
+          <div class="summary-content">
+            {{! Display the full content for now, we'll implement content filtering via JavaScript later }}
+            {{{content}}}
+          </div>
+        </div>
+      </div>
+      
+      <div class="column3 summary-sidebar">
+        {{! Expert 1 }}
+        <div class="frame-21">
+          <div class="ava">
+            <img class="ellipse-1" src="{{asset "images/expert1.png"}}" alt="エリン・コベイン先生" />
+            <div class="text">
+              <div class="div3">エリン・コベイン先生</div>
+              <div class="div4">
+                准教授 ミシガン大学ローゲルがんセンター
+                <br />
+                乳がん腫瘍クリニック
+                <br />
+                医療腫瘍学・内科学
+              </div>
+            </div>
+          </div>
+          <div class="frame-20">
+            <img class="play" src="{{asset "images/play.svg"}}" />
+            <div class="_0-00-3-26">0:00 / 3:26</div>
+            <div class="rectangle-2"></div>
+            <div class="frame-22">
+              <img class="volume-high" src="{{asset "images/volume-high.svg"}}" />
+              <img class="more-vertical" src="{{asset "images/more-vertical.svg"}}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content-row">
+      <div class="column2">
+        <div class="block">
+          <div class="title2">
+            <div class="content">
+              <div class="title3">解説</div>
+            </div>
+          </div>
+          <div class="block2">
+            <div class="explanation-content">
+              {{! For now, using the same content - will be filtered with frontend JavaScript }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="column3 explanation-sidebar">
+        {{! Expert 2 }}
+        <div class="frame-27">
+          <div class="ava">
+            <img class="ellipse-1" src="{{asset "images/expert2.png"}}" alt="佐治重衡先生" />
+            <div class="text">
+              <div class="div3">佐治重衡先生</div>
+              <div class="div4">
+                主任教授
+                <br />
+                福島県立医科大学 医学部
+                <br />
+                腫瘍内科学講座
+              </div>
+            </div>
+          </div>
+          <div class="frame-20">
+            <img class="play" src="{{asset "images/play.svg"}}" />
+            <div class="_0-00-3-26">0:00 / 3:26</div>
+            <div class="rectangle-2"></div>
+            <div class="frame-22">
+              <img class="volume-high" src="{{asset "images/volume-high.svg"}}" />
+              <img class="more-vertical" src="{{asset "images/more-vertical.svg"}}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client-side JavaScript to split the content into sections only
+  // (JavaScript for positioning expert cards has been removed)
+  document.addEventListener('DOMContentLoaded', function() {
+    const content = document.querySelector('.summary-content');
+    const explanation = document.querySelector('.explanation-content');
+    
+    if (content && explanation) {
+      // Original content HTML
+      const html = content.innerHTML;
+      
+      // Create a temporary div to parse the HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      
+      // Find all headings
+      const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      
+      let summaryContent = '';
+      let explanationContent = '';
+      let currentSection = '';
+      
+      headings.forEach(heading => {
+        const headingText = heading.textContent.trim().toLowerCase();
+        
+        if (headingText.includes('要約') || headingText.includes('summary')) {
+          currentSection = 'summary';
+          // Skip this heading
+        } else if (headingText.includes('解説') || headingText.includes('explanation')) {
+          currentSection = 'explanation';
+          // Skip this heading
+        }
+        
+        // Start collecting content for this section
+        let nextElement = heading.nextElementSibling;
+        while (nextElement && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nextElement.tagName)) {
+          if (currentSection === 'summary') {
+            summaryContent += nextElement.outerHTML;
+          } else if (currentSection === 'explanation') {
+            explanationContent += nextElement.outerHTML;
+          }
+          nextElement = nextElement.nextElementSibling;
+          if (!nextElement) break;
+        }
+      });
+      
+      // If no sections were found, use the first few paragraphs as summary
+      if (!summaryContent) {
+        const paragraphs = tempDiv.querySelectorAll('p');
+        for (let i = 0; i < Math.min(3, paragraphs.length); i++) {
+          summaryContent += paragraphs[i].outerHTML;
+        }
+      }
+      
+      // Update the content areas
+      content.innerHTML = summaryContent || html;
+      explanation.innerHTML = explanationContent || '';
+    }
+  });
+</script>
