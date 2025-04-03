@@ -61,16 +61,6 @@
   height: 100%;
 }
 
-.header-navigation-wrapper {
-  display: flex;
-  flex-direction: row;
-  gap: 32px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  position: relative;
-}
-
 /* Navigation container styling */
 .navigation-container {
   display: flex;
@@ -142,16 +132,9 @@
   .site-header {
     padding: 16px 20px;
   }
-  
-  .header-navigation-wrapper {
-    gap: 16px;
-  }
 }
 
 @media (max-width: 576px) {
-  .header-navigation-wrapper {
-    display: none;
-  }
   
   .site-header {
     justify-content: center;

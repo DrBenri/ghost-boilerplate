@@ -47,20 +47,6 @@
   font-weight: 500;
   position: relative;
 }
-.frame-12, .frame-13, .frame-14, [class^="frame-"] {
-  border-style: solid;
-  border-color: var(--neutral-02, #cacaca);
-  border-width: 0px 0px 0.5px 0px;
-  padding: 24px 0px 24px 0px;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
 ._2024-11-23 {
   color: var(--neutral-04, #808080);
   text-align: left;
@@ -71,15 +57,7 @@
   position: relative;
   width: 170px;
 }
-.frame-11 {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex: 1;
-  position: relative;
-}
+
 .destiny-breast-06 {
   color: var(--neutral-08, #1a1a1a);
   text-align: left;
@@ -236,23 +214,12 @@
     line-height: 24px;
   }
   
-  .frame-12, .frame-13, .frame-14, [class^="frame-"] {
-    flex-direction: column;
-    gap: 12px;
-    padding: 24px 0px 24px 0px;
-  }
-  
   ._2024-11-23 {
     font-size: 12px;
     line-height: 20px;
     width: 100px;
   }
-  
-  .frame-11 {
-    align-self: stretch;
-    flex-shrink: 0;
-    flex: none;
-  }
+
   
   .destiny-breast-06 {
     font-size: 16px;
