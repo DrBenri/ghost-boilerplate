@@ -26,6 +26,7 @@
     
     {{!-- Custom CSS for header styling --}}
     <link rel="stylesheet" type="text/css" href="{{asset "css/custom.css"}}" />
+    <link rel="stylesheet" type="text/css" href="{{asset "css/header.css"}}" />
 
     {{!-- This tag outputs all your advanced SEO meta, structured data, and other important settings,
     it should always be the last tag before the closing head tag --}}
@@ -35,21 +36,21 @@
 <body class="{{body_class}} is-head-{{#match @custom.navigation_layout "Logo on cover"}}left-logo{{else match @custom.navigation_layout "Logo in the middle"}}middle-logo{{else}}stacked{{/match}}{{#match @custom.title_font "=" "Elegant serif"}} has-serif-title{{/match}}{{#match @custom.body_font "=" "Modern sans-serif"}} has-sans-body{{/match}}{{#if @custom.show_publication_cover}} has-cover{{/if}}">
 <div class="viewport">
 
-    <header id="gh-head" class="site-header">
-        <div class="site-logo">
-            <a href="{{@site.url}}" class="logo-link">
+    <header id="gh-head" class="top-header">
+        <div class="logo">
+            <a href="{{@site.url}}">
                 {{#if @site.logo}}
-                    <img class="site-logo-image" src="{{@site.logo}}" alt="{{@site.title}}" />
+                    <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
                 {{else}}
                     <div class="site-logo-text">{{@site.title}}</div>
                 {{/if}}
             </a>
         </div>
-        <div class="header-navigation-wrapper">
+        <div class="frame-1">
             <nav class="navigation-container">
                 {{navigation}}
             </nav>
-            <div class="medical-info-text">医療関係者向け情報サイト</div>
+            <div class="dr-benri-breast-cancer-focus">医療関係者向け情報サイト</div>
         </div>
     </header>
 

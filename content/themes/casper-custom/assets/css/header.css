@@ -1,0 +1,97 @@
+.top-header,
+.top-header * {
+  box-sizing: border-box;
+}
+
+.top-header {
+  border-style: solid;
+  border-color: var(--neutral-02, #cacaca);
+  border-width: 0px 0px 0.5px 0px;
+  padding: 16px 80px 16px 80px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  flex-shrink: 0;
+  height: 100px;
+  position: relative;
+}
+
+.logo {
+  flex-shrink: 0;
+  width: 272.82px;
+  height: 68px;
+  position: relative;
+}
+
+.image-132 {
+  width: 272.82px;
+  height: 68px;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  object-fit: cover;
+  aspect-ratio: 272.82/68;
+}
+
+.frame-1 {
+  display: flex;
+  flex-direction: row;
+  gap: 32px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.dr-benri-breast-cancer-focus {
+  color: var(--neutral-06, #4d4d4d);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+}
+
+.div {
+  color: var(--neutral-06, #4d4d4d);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+}
+
+/* Additional styles for navigation integration */
+.navigation-container {
+  display: flex;
+  align-items: center;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 767px) {
+  .top-header {
+    padding: 12px 20px;
+    height: auto;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .frame-1 {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .logo, .image-132 {
+    width: 180px;
+    height: auto;
+    position: relative;
+  }
+  
+  .image-132 {
+    position: static;
+  }
+}
