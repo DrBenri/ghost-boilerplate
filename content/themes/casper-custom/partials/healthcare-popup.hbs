@@ -1,54 +1,23 @@
 <!-- Fullscreen Confirmation Popup -->
 <div id="confirmPopup" class="confirmation-popup">
-    <!-- For desktop view -->
-    <div class="popup-desktop-container" id="popup-desktop-container">
-        <h2>医療従事者専用サイトの免責事項</h2>
-        <p>このサイトは医療従事者を対象としています。臨床試験のレビュー、</p>
-        <p>解説、その他の医療情報などを含むサイトのコンテンツは情報提供のみを目的と</p>
-        <p>しています。このサイトは登録を必要とせず、製品の是認や宣伝は致しません。</p>
+    <div class="popup-container">
+         <img class="popup-logo" src="{{asset "images/notify.png"}}" loading="lazy" alt="{{@site.title}}">
         
-        <p>臨床データは日本の規制当局が承認した使用目的とは異なる場合がございます。</p>
-        <p>情報を解釈いただく際は、自らの判断を用いてください。</p>
+        <div class="popup-content">
+            <div class="popup-title">医療従事者専用サイトの免責事項</div>
+            <div class="popup-description">
+                このサイトは医療従事者を対象としています。臨床試験のレビュー、解説、その他の医療情報などを含むサイトのコンテンツは情報提供のみを目的としています。このサイトは登録を必要とせず、製品の是認や宣伝は致しません。臨床データは日本の規制当局が承認した使用目的とは異なる場合がございます。情報を解釈いただく際は、自らの判断を用いてください。本サイトのコンテンツに基づいて下された決断について、当社は一切の責任を負いません。本サイトへアクセスをすることで、ご自身が医療従事者である確認と当社のプライバシーポリシーに同意されることとみなされます。
+            </div>
+            <div class="popup-question">あなたは医療関係者ですか？</div>
+        </div>
         
-        <p>本サイトのコンテンツに基づいて下された決断について、当社は一切の責任を</p>
-        <p>負いません。本サイトへアクセスをすることで、ご自身が医療従事者である</p>
-        <p>確認と当社のプライバシーポリシーに同意されることとみなされます。</p>
-        <h4>あなたは医療関係者ですか？</h4>
         <div class="popup-buttons">
-            <button onclick="HealthcarePopup.confirmYes()" class="btn-yes">はい</button>
-            <button onclick="HealthcarePopup.confirmNo()" class="btn-no">いいえ</button>
+            <div class="popup-btn-yes" onclick="HealthcarePopup.confirmYes()">
+                <div class="popup-yes-text">はい</div>
+            </div>
+            <div class="popup-btn-no" onclick="HealthcarePopup.confirmNo()">
+                <div class="popup-no-text">いいえ</div>
+            </div>
         </div>
     </div>
-                                                                                                                           
-    <!-- For mobile view -->
-    <div class="popup-responsive-container" id="popup-responsive-container">
-        <h4>医療従事者専用サイトの免責事項</h4>
-        <p>このサイトは医療従事者を対象としています。</p>
-        <p>臨床試験のレビュー、解説、</p>
-        <p>その他の医療情報などを含む</p>
-        <p>サイトのコンテンツは情報提供のみを目的と</p>
-        <p>しています。このサイトは登録を必要とせず、</p>
-        <p>製品の是認や宣伝は致しません。</p>
-        <p>臨床データは日本の規制当局が承認した</p>
-        <p>使用目的とは異なる場合がございます。</p>
-        <p>情報を解釈いただく際は、自らの判断を</p>
-        <p>用いてください。</p>
-        <p>本サイトのコンテンツに基づいて下された</p>
-        <p>決断について、当社は一切の責任を負いません。</p>
-        <p>本サイトへアクセスをすることで、</p>
-        <p>ご自身が医療従事者である確認と</p>
-        <p>当社のプライバシーポリシーに同意されることと</p>
-        <p>みなされます。</p>
-        <h5>あなたは医療関係者ですか？</h5>
-        <div class="popup-buttons">
-            <button onclick="HealthcarePopup.confirmYes()" class="btn-yes">はい</button>
-            <button onclick="HealthcarePopup.confirmNo()" class="btn-no">いいえ</button>
-        </div>
-    </div>
-                                                                                                                           
-    {{#if @site.logo}}
-        <img src="{{@site.logo}}" width="200" loading="lazy" alt="{{@site.title}}" class="popup-logo">
-    {{else}}
-        <div class="popup-logo-text">{{@site.title}}</div>
-    {{/if}}
 </div>
