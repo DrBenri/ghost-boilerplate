@@ -14,6 +14,14 @@
     overflow: hidden;
 }
 
+/* Prevent background scrolling when popup is active */
+body.popup-active {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
 /* New popup styles */
 .popup-container,
 .popup-container * {
@@ -70,6 +78,10 @@
   font-weight: 500;
   position: relative;
   align-self: stretch;
+}
+
+.popup-title-part1, .popup-title-part2 {
+  display: inline;
 }
 
 .popup-description {
@@ -167,31 +179,161 @@
 /* Responsive styles for mobile devices */
 @media screen and (max-width: 768px) {
   .popup-container {
-    padding: 40px 20px 30px 20px;
-    gap: 30px;
+    margin: -98px 0 0 0;
+    padding: 40px 32px 40px 32px;
+    gap: 24px;
+    align-self: stretch;
+  }
+  
+  .popup-logo {
+    width: 101.52px;
+    height: 100px;
+  }
+  
+  .popup-content {
+    gap: 12px;
   }
   
   .popup-title {
-    font-size: 20px;
-    line-height: 30px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  
+  .popup-title-part1, .popup-title-part2 {
+    display: block;
+  }
+  
+  .popup-title-part1 {
+    margin-bottom: 4px;
   }
   
   .popup-description {
     font-size: 14px;
-    line-height: 28px;
+    line-height: 24px;
   }
   
   .popup-question {
-    font-size: 18px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+  
+  .popup-buttons {
+    flex-direction: row;
+    gap: 16px;
+  }
+  
+  .popup-btn-yes,
+  .popup-btn-no {
+    padding: 10px 24px 10px 24px;
+  }
+}
+
+/* Enhanced styles for smaller devices */
+@media screen and (max-width: 480px) {
+  .confirmation-popup {
+    padding: 15px;
+    align-items: flex-start;
+    padding-top: 50px;
+  }
+  
+  .popup-container {
+    margin: 0;
+    width: 100%;
+    height: auto;
+    min-height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 30px 20px;
+    gap: 20px;
+    border-width: 2px;
   }
   
   .popup-logo {
-    width: 120px;
-    height: 120px;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 0;
+  }
+  
+  .popup-content {
+    gap: 12px;
+  }
+  
+  .popup-title {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  
+  .popup-title-part1 {
+    margin-bottom: 2px;
+  }
+  
+  .popup-description {
+    font-size: 13px;
+    line-height: 20px;
+    max-height: 40vh;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+  
+  .popup-question {
+    font-size: 15px;
+    line-height: 20px;
+    margin-top: 5px;
   }
   
   .popup-buttons {
     flex-direction: column;
+    width: 100%;
+    gap: 12px;
+  }
+  
+  .popup-btn-yes,
+  .popup-btn-no {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+  }
+  
+  .popup-yes-text,
+  .popup-no-text {
+    font-size: 16px;
+  }
+}
+
+/* Ultra-small devices (e.g., iPhone SE, small Android phones) */
+@media screen and (max-width: 360px) {
+  .popup-container {
+    padding: 20px 15px;
     gap: 15px;
+  }
+  
+  .popup-logo {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .popup-title {
+    font-size: 15px;
+    line-height: 20px;
+  }
+  
+  .popup-description {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  
+  .popup-question {
+    font-size: 14px;
+    margin-top: 2px;
+  }
+  
+  .popup-btn-yes,
+  .popup-btn-no {
+    padding: 10px 15px;
+  }
+  
+  .popup-yes-text,
+  .popup-no-text {
+    font-size: 15px;
   }
 }

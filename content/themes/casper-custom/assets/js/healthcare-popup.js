@@ -17,6 +17,7 @@ const HealthcarePopup = {
                 
                 // Add class to prevent body scrolling
                 document.body.classList.add('popup-open');
+                document.body.classList.add('popup-active'); // Add class to prevent scrolling
             }
         }
         
@@ -59,6 +60,7 @@ const HealthcarePopup = {
         
         // Remove body scroll lock
         document.body.classList.remove('popup-open');
+        document.body.classList.remove('popup-active'); // Remove class to re-enable scrolling
         
         // You can add analytics tracking here if needed
     },
