@@ -39,68 +39,14 @@
 <body class="{{body_class}} is-head-{{#match @custom.navigation_layout "Logo on cover"}}left-logo{{else match @custom.navigation_layout "Logo in the middle"}}middle-logo{{else}}stacked{{/match}}{{#match @custom.title_font "=" "Elegant serif"}} has-serif-title{{/match}}{{#match @custom.body_font "=" "Modern sans-serif"}} has-sans-body{{/match}}{{#if @custom.show_publication_cover}} has-cover{{/if}}">
 <div class="viewport">
 
-    <header id="gh-head" class="top-header">
-        <div class="logo">
-            <a href="{{@site.url}}">
-                {{#if @site.logo}}
-                    <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
-                {{else}}
-                    <div class="site-logo-text">{{@site.title}}</div>
-                {{/if}}
-            </a>
-        </div>
-        <div class="header-navigation-area">
-            <nav class="navigation-container">
-                {{navigation}}
-            </nav>
-            <div class="dr-benri-breast-cancer-focus">医療関係者向け情報サイト</div>
-        </div>
-    </header>
+    {{> "components/header"}}
 
     <div class="site-content">
         {{!-- All other templates get inserted here, index.hbs, post.hbs, etc --}}
         {{{body}}}
     </div>
 
-    {{!-- Custom footer with new design --}}
-    <footer class="site-footer-v2">
-        <div class="footer-content">
-            <div class="footer-logo">
-                {{> "icons/small-logo"}}
-                <div class="company-name">Dr.Benri株式会社</div>
-            </div>
-            <div class="footer-column footer-column-social">
-                <div class="social-title">Follow us</div>
-                <div class="social-icons">
-                    <a href="https://twitter.com/youraccount" target="_blank" rel="noopener">
-                        {{> "icons/x"}}
-                    </a>
-                    <a href="https://line.me/youraccount" target="_blank" rel="noopener">
-                        <div class="icon-line-wrapper">
-                            {{> "icons/line"}}
-                        </div>
-                    </a>
-                </div>
-            </div>
-            <div class="footer-column footer-column-links">
-                <div class="footer-section-title">2024年ASCO</div>
-                <div class="footer-links">
-                    <a href="{{@site.url}}/copyright" class="footer-link">
-                        {{> "icons/arrow-right"}}
-                        <div class="link-text">著作権について</div>
-                    </a>
-                    <a href="{{@site.url}}/privacy-policy" class="footer-link">
-                        {{> "icons/arrow-right"}}
-                        <div class="link-text">プライバシーポリシー</div>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-divider"></div>
-        <div class="copyright-container">
-            <div class="copyright-text">Copyright © {{date format="YYYY"}} Dr.Benri株式会社</div>
-        </div>
-    </footer>
+    {{> "components/footer"}}
 
 </div>
 {{!-- /.viewport --}}

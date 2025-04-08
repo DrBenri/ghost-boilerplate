@@ -1,0 +1,17 @@
+<header id="gh-head" class="top-header">
+    <div class="logo">
+        <a href="{{@site.url}}">
+            {{#if @site.logo}}
+                <img class="image-132" src="{{@site.logo}}" alt="{{@site.title}}" />
+            {{else}}
+                <div class="site-logo-text">{{@site.title}}</div>
+            {{/if}}
+        </a>
+    </div>
+    <div class="header-navigation-area">
+        <nav class="navigation-container">
+            {{navigation}}
+        </nav>
+        <div class="dr-benri-breast-cancer-focus">医療関係者向け情報サイト</div>
+    </div>
+</header>

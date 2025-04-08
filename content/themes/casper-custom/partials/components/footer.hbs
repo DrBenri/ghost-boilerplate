@@ -1,0 +1,39 @@
+{{!-- Custom footer with new design --}}
+<footer class="site-footer-v2">
+    <div class="footer-content">
+        <div class="footer-logo">
+            {{> "icons/small-logo"}}
+            <div class="company-name">Dr.Benri株式会社</div>
+        </div>
+        <div class="footer-column footer-column-social">
+            <div class="social-title">Follow us</div>
+            <div class="social-icons">
+                <a href="https://twitter.com/youraccount" target="_blank" rel="noopener">
+                    {{> "icons/x"}}
+                </a>
+                <a href="https://line.me/youraccount" target="_blank" rel="noopener">
+                    <div class="icon-line-wrapper">
+                        {{> "icons/line"}}
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="footer-column footer-column-links">
+            <div class="footer-section-title">2024年ASCO</div>
+            <div class="footer-links">
+                <a href="{{@site.url}}/copyright" class="footer-link">
+                    {{> "icons/arrow-right"}}
+                    <div class="link-text">著作権について</div>
+                </a>
+                <a href="{{@site.url}}/privacy-policy" class="footer-link">
+                    {{> "icons/arrow-right"}}
+                    <div class="link-text">プライバシーポリシー</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="copyright-container">
+        <div class="copyright-text">Copyright © {{date format="YYYY"}} Dr.Benri株式会社</div>
+    </div>
+</footer>
