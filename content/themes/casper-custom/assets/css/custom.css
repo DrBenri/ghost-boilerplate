@@ -782,3 +782,26 @@
     align-items: center;
   }
 }
+
+.text-center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.custom-article-title {
+    color: var(--neutral-08, #1a1a1a);
+    font-family: "NotoSansJp-Medium", sans-serif;
+    font-size: 40px;
+    line-height: 64px;
+    position: relative;
+    align-self: stretch;
+}
+
+/* Mobile styles for article title */
+@media (max-width: 768px) {
+    .custom-article-title {
+        font-size: 16px;
+        line-height: 20px;
+    }
+}

@@ -58,26 +58,6 @@
   width: 170px;
 }
 
-.destiny-breast-06 {
-  color: var(--neutral-08, #1a1a1a);
-  text-align: left;
-  font-family: "NotoSansJp-Medium", sans-serif;
-  font-size: 20px;
-  line-height: 32px;
-  font-weight: 500;
-  position: relative;
-  align-self: stretch;
-}
-.destiny-breast-06-m-bc-her-2-her-2-td-xd {
-  color: var(--neutral-05, #5e5e5e);
-  text-align: left;
-  font-family: "NotoSansJp-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-}
 .frame-3 {
   padding: 8px 0px 8px 0px;
   display: flex;
@@ -220,17 +200,6 @@
     width: 100px;
   }
 
-  
-  .destiny-breast-06 {
-    font-size: 16px;
-    line-height: 20px;
-  }
-  
-  .destiny-breast-06-m-bc-her-2-her-2-td-xd {
-    font-size: 14px;
-    line-height: 20px;
-  }
-  
   .div {
     font-size: 14px;
   }
