@@ -1,3 +1,6 @@
+{{!-- Include the CSS and JS files --}}
+<link rel="stylesheet" href="{{asset "css/content-layout.css"}}">
+
 <div class="wrapper">
   <div class="column">
     <div class="title">
@@ -6,11 +9,11 @@
     <div class="menu">
       <div class="div">目次</div>
       <div class="container">
-        <div class="item">
+        <div class="item" id="summary-link">
           <img class="arrow-right" src="{{asset "images/arrow-right.svg"}}" />
           <div class="div2">要約</div>
         </div>
-        <div class="item">
+        <div class="item" id="explanation-link">
           <img class="arrow-right2" src="{{asset "images/arrow-right.svg"}}" />
           <div class="div2">解説</div>
         </div>
@@ -21,7 +24,7 @@
   <div class="content-container">
     <div class="content-row">
       <div class="column2">
-        <div class="block">
+        <div class="block" id="summary-section">
           <div class="title2">
             <div class="content">
               <div class="title3">要約</div>
@@ -65,7 +68,7 @@
     
     <div class="content-row">
       <div class="column2">
-        <div class="block">
+        <div class="block" id="explanation-section">
           <div class="title2">
             <div class="content">
               <div class="title3">解説</div>
@@ -110,63 +113,5 @@
   </div>
 </div>
 
-<script>
-  // Client-side JavaScript to split the content into sections only
-  // (JavaScript for positioning expert cards has been removed)
-  document.addEventListener('DOMContentLoaded', function() {
-    const content = document.querySelector('.summary-content');
-    const explanation = document.querySelector('.explanation-content');
-    
-    if (content && explanation) {
-      // Original content HTML
-      const html = content.innerHTML;
-      
-      // Create a temporary div to parse the HTML
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = html;
-      
-      // Find all headings
-      const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      
-      let summaryContent = '';
-      let explanationContent = '';
-      let currentSection = '';
-      
-      headings.forEach(heading => {
-        const headingText = heading.textContent.trim().toLowerCase();
-        
-        if (headingText.includes('要約') || headingText.includes('summary')) {
-          currentSection = 'summary';
-          // Skip this heading
-        } else if (headingText.includes('解説') || headingText.includes('explanation')) {
-          currentSection = 'explanation';
-          // Skip this heading
-        }
-        
-        // Start collecting content for this section
-        let nextElement = heading.nextElementSibling;
-        while (nextElement && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nextElement.tagName)) {
-          if (currentSection === 'summary') {
-            summaryContent += nextElement.outerHTML;
-          } else if (currentSection === 'explanation') {
-            explanationContent += nextElement.outerHTML;
-          }
-          nextElement = nextElement.nextElementSibling;
-          if (!nextElement) break;
-        }
-      });
-      
-      // If no sections were found, use the first few paragraphs as summary
-      if (!summaryContent) {
-        const paragraphs = tempDiv.querySelectorAll('p');
-        for (let i = 0; i < Math.min(3, paragraphs.length); i++) {
-          summaryContent += paragraphs[i].outerHTML;
-        }
-      }
-      
-      // Update the content areas
-      content.innerHTML = summaryContent || html;
-      explanation.innerHTML = explanationContent || '';
-    }
-  });
-</script>
+{{!-- Include JavaScript at the end of the body for better performance --}}
+<script src="{{asset "js/content-layout.js"}}"></script>
