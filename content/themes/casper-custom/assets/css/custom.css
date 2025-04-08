@@ -1,3 +1,10 @@
+/* Custom CSS for Casper Theme */
+/* This file contains custom styles for the Casper theme. */
+:root {
+  --content-width: 848px;
+}
+
+
 /* Custom Header Styling - Improved class names */
 .site-header,
 .site-header * {
