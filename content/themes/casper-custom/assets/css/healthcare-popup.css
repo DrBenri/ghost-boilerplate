@@ -34,7 +34,7 @@ body.popup-active {
   border-style: solid;
   border-color: var(--primary-03, #5793fb);
   border-width: 3px;
-  padding: 60px 40px 40px 40px;
+  padding: 60px 38px 40px 38px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -45,7 +45,7 @@ body.popup-active {
   backdrop-filter: blur(24px);
   max-width: 90%;
   width: 800px;
-  height: 702px;
+  height: 502px;
   overflow: hidden;
 }
 
