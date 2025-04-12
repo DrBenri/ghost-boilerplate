@@ -26,6 +26,7 @@
   width: 272.82px;
   height: 68px;
   position: relative;
+  display: block;
 }
 
 .image-132 {
@@ -35,7 +36,7 @@
   left: 0px;
   top: 0px;
   object-fit: contain;
-  aspect-ratio: 176.53/40;
+  aspect-ratio: 272.82/68; /* Corrected aspect ratio */
 }
 
 .header-navigation-area {
@@ -68,10 +69,96 @@
   position: relative;
 }
 
-/* Additional styles for navigation integration */
+/* Site Header & Logo Styles */
+.site-header {
+  border-bottom: 0.5px solid var(--color-neutral-02);
+  padding: 16px 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  background-color: #FFFFFF;
+  width: 100%;
+  z-index: var(--z-index-sticky);
+}
+
+.site-logo {
+  flex-shrink: 0;
+  width: 272.82px;
+  height: 68px;
+  position: relative;
+}
+
+.logo-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  cursor: pointer;
+}
+
+.site-logo-image {
+  width: 272.82px;
+  height: 68px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  object-fit: contain;
+  aspect-ratio: 272.82/68;
+}
+
+.site-logo-text {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: var(--font-family-medium);
+  font-size: var(--font-size-lg);
+  line-height: 24px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-09);
+  width: 100%;
+  height: 100%;
+}
+
+/* Navigation styling */
 .navigation-container {
   display: flex;
   align-items: center;
+  gap: var(--spacing-md);
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.navigation-container ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-md);
+}
+
+.navigation-container ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.navigation-container ul li a,
+.medical-info-text {
+  color: var(--color-neutral-06);
+  text-align: left;
+  font-family: var(--font-family-regular);
+  font-size: var(--font-size-md);
+  line-height: 20px;
+  font-weight: var(--font-weight-regular);
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.navigation-container ul li a:hover,
+.medical-info-text:hover {
+  color: var(--color-primary);
 }
 
 /* Mobile Menu Toggle Button and Overlay */
@@ -285,6 +372,10 @@
   .top-header {
     padding: 16px 40px;
   }
+
+  .site-header {
+    padding: 16px 40px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -320,6 +411,20 @@
   .mobile-menu-container {
     padding: 16px 20px;
   }
+
+  .site-header {
+    padding: 16px 20px;
+    height: 70px; /* Slightly smaller header on smaller tablets */
+  }
+  
+  /* Tablet-specific navigation adjustments */
+  .navigation-container ul {
+    gap: var(--spacing-xs);
+  }
+  
+  .navigation-container ul li a {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -340,6 +445,12 @@
   
   .mobile-menu-container {
     padding: 12px 16px;
+  }
+
+  .site-header {
+    justify-content: center;
+    padding: 12px 16px;
+    height: 56px;
   }
 }
 
