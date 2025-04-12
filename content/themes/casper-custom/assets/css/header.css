@@ -7,32 +7,35 @@
   border-style: solid;
   border-color: var(--neutral-02, #cacaca);
   border-width: 0px 0px 0.5px 0px;
-  padding: 16px 80px 16px 80px;
+  padding: 16px 80px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   align-self: stretch;
   flex-shrink: 0;
-  height: 100px;
+  height: 80px;
   position: relative;
+  background-color: #FFFFFF;
+  width: 100%;
+  z-index: 1000;
 }
 
 .logo {
   flex-shrink: 0;
-  width: 272.82px;
-  height: 68px;
+  width: 176.53px;
+  height: 44px;
   position: relative;
 }
 
 .image-132 {
-  width: 272.82px;
-  height: 68px;
+  width: 176.53px;
+  height: 44px;
   position: absolute;
   left: 0px;
   top: 0px;
-  object-fit: cover;
-  aspect-ratio: 272.82/68;
+  object-fit: contain;
+  aspect-ratio: 176.53/44;
 }
 
 .header-navigation-area {
@@ -71,27 +74,47 @@
   align-items: center;
 }
 
-/* Responsive adjustments for mobile */
-@media (max-width: 767px) {
+/* Responsive adjustments */
+@media (max-width: 1024px) {
   .top-header {
-    padding: 12px 20px;
-    height: auto;
-    flex-direction: column;
-    gap: 15px;
+    padding: 16px 40px;
   }
-  
-  .header-navigation-area {
-    flex-direction: column;
-    width: 100%;
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    padding: 16px 20px;
+    height: 64px;
   }
   
   .logo, .image-132 {
-    width: 180px;
-    height: auto;
-    position: relative;
+    width: 140px;
+    height: 35px;
   }
   
-  .image-132 {
-    position: static;
+  .dr-benri-breast-cancer-focus {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  
+  .header-navigation-area {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 576px) {
+  .top-header {
+    padding: 12px 16px;
+    height: 56px;
+    justify-content: center;
+  }
+  
+  .header-navigation-area {
+    display: none;
+  }
+  
+  .logo, .image-132 {
+    width: 120px;
+    height: 30px;
   }
 }
