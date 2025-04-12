@@ -1,10 +1,15 @@
 (function () {
     const mediaQuery = window.matchMedia('(max-width: 767px)');
 
+    // Add null checks to prevent errors if elements don't exist
     const head = document.querySelector('.gh-head');
+    if (!head) return; // Exit early if head element isn't found
+    
     const menu = document.querySelector('.gh-head-menu');
+    if (!menu) return; // Exit early if menu element isn't found
+    
     const nav = menu.querySelector('.nav');
-    if (!nav) return;
+    if (!nav) return; // This check was already present
 
     const logo = document.querySelector('.gh-head-logo');
     const navHTML = nav.innerHTML;
@@ -71,9 +76,15 @@
         window.addEventListener('click', windowClickListener);
     }
 
-    imagesLoaded(head, function () {
+    // Only try to call imagesLoaded if it exists
+    if (typeof imagesLoaded === 'function') {
+        imagesLoaded(head, function () {
+            makeDropdown();
+        });
+    } else {
+        // Fallback if imagesLoaded is not available
         makeDropdown();
-    });
+    }
 
     window.addEventListener('resize', function () {
         setTimeout(function () {
