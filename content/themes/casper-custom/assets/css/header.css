@@ -82,6 +82,9 @@
   padding: 0;
   cursor: pointer;
   z-index: 1001;
+  width: 32px;
+  height: 32px;
+  position: relative;
 }
 
 .hamburger-icon {
@@ -133,6 +136,8 @@
   align-items: center;
   border-bottom: 1px solid #EAEAEA;
   padding-bottom: 12px;
+  height: 56px;
+  position: relative;
 }
 
 .mobile-menu-logo img {
@@ -149,6 +154,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  position: relative;
+  z-index: 1001;
 }
 
 .mobile-menu-content {
@@ -306,6 +316,10 @@
   .header-navigation-area {
     display: none;
   }
+  
+  .mobile-menu-container {
+    padding: 16px 20px;
+  }
 }
 
 @media (max-width: 576px) {
@@ -322,6 +336,10 @@
   .logo, .image-132 {
     width: 160px;
     height: 40px;
+  }
+  
+  .mobile-menu-container {
+    padding: 12px 16px;
   }
 }
 

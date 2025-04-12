@@ -819,19 +819,28 @@
 }
 
 .custom-article-title {
-    color: var(--neutral-08, #1a1a1a);
-    font-family: "NotoSansJp-Medium", sans-serif;
+    width: 656px;
+    height: 64px;
+    color: #000000;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-style: normal;
+    font-weight: 500;
     font-size: 40px;
-    line-height: 64px;
+    line-height: 64px; /* 160% */
     position: relative;
-    align-self: stretch;
+    flex: none;
+    order: 1;
+    flex-grow: 0;
+    z-index: 1;
 }
 
 /* Mobile styles for article title */
 @media (max-width: 768px) {
     .custom-article-title {
-        font-size: 16px;
-        line-height: 20px;
+        font-size: 24px;
+        line-height: 36px;
+        width: 100%;
+        height: auto;
     }
 }
 
