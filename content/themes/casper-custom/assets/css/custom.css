@@ -119,8 +119,8 @@ body,
 
 .site-logo {
   flex-shrink: 0;
-  width: 176.53px;
-  height: 44px;
+  width: 272.82px;
+  height: 68px;
   position: relative;
 }
 
@@ -133,13 +133,13 @@ body,
 }
 
 .site-logo-image {
-  width: 176.53px;
-  height: 44px;
+  width: 272.82px;
+  height: 68px;
   position: absolute;
   left: 0;
   top: 0;
   object-fit: contain;
-  aspect-ratio: 176.53/44;
+  aspect-ratio: 272.82/68;
 }
 
 .site-logo-text {
