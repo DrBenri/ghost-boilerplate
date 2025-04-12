@@ -1,0 +1,13 @@
+{{!-- Custom mobile navigation with arrow icons --}}
+<ul class="nav">
+    {{#foreach navigation}}
+        <li class="nav-{{slug}}">
+            <a href="{{url absolute="true"}}" class="mobile-nav-item">
+                 <span class="mobile-nav-arrow-wrapper">
+                    {{> "icons/arrow-right"}}
+                </span>
+                <span>{{label}}</span>
+            </a>
+        </li>
+    {{/foreach}}
+</ul>
