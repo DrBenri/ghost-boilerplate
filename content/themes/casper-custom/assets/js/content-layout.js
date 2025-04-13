@@ -2,6 +2,37 @@
 document.addEventListener('DOMContentLoaded', function() {
   const content = document.querySelector('.summary-content');
   const explanation = document.querySelector('.explanation-content');
+  const menu = document.querySelector('.menu');
+  const column = document.querySelector('.column');
+  
+  // Get the initial menu position
+  let menuOffsetTop = 0;
+  
+  if (column && menu) {
+    menuOffsetTop = menu.offsetTop;
+  }
+  
+  // Handle fixed menu positioning on scroll
+  function handleMenuPosition() {
+    if (!menu || !column) return;
+    
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    if (scrollTop > menuOffsetTop) {
+      menu.classList.add('menu-fixed');
+      // Preserve original width to maintain consistent styling
+      menu.style.width = '';
+    } else {
+      menu.classList.remove('menu-fixed');
+      menu.style.width = '';
+    }
+  }
+  
+  // Add scroll event listener for menu positioning
+  window.addEventListener('scroll', handleMenuPosition, { passive: true });
+  
+  // Initial call to set correct position
+  handleMenuPosition();
   
   if (content && explanation) {
     // Original content HTML
