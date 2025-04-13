@@ -637,6 +637,10 @@ body,
 /* ------ Responsive Media Queries ------ */
 /* Large desktops (1280px and up) */
 @media (max-width: 1280px) {
+  .site-content {
+    padding: 0 40px;
+  }
+  
   .banner-container {
     width: calc(100% - 80px);
     max-width: 1200px;
@@ -661,6 +665,10 @@ body,
 
 /* Tablets and small desktops (992px) */
 @media (max-width: 992px) {
+  .site-content {
+    padding: 0 30px;
+  }
+  
   .banner {
     height: auto;
     min-height: 400px;
@@ -870,6 +878,10 @@ body,
 
 /* Tablets (768px) */
 @media (max-width: 768px) {
+  .site-content {
+    padding: 0 20px;
+  }
+  
   .custom-article-title {
     font-size: var(--font-size-title);
     line-height: 36px;
@@ -967,7 +979,7 @@ body,
   
   .banner {
     height: auto;
-    min-height: 180px;
+    min-height: 100px;
     margin-bottom: 120px;
     overflow: visible;
   }
@@ -1132,6 +1144,8 @@ body,
   
   .banner-content {
     width: 100%;
+    max-width: unset;
+    margin-left: 190px;
   }
   
   .container {
