@@ -1020,6 +1020,8 @@ body,
   .banner-content {
     width: calc(100% - 105px);
     gap: 4px;
+    position: absolute;
+    padding: 16px;
   }
   
   .banner-meta {
