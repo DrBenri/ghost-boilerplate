@@ -7,16 +7,20 @@
       <div class="_2024-11-23">{{date format="YYYY年MM月DD日"}}</div>
     </div>
     <div class="menu">
-      <div class="div">目次</div>
-      <div class="container">
-        <div class="item" id="summary-link">
-          <img class="arrow-right" src="{{asset "images/arrow-right.svg"}}" />
-          <div class="div2">要約</div>
-        </div>
-        <div class="item" id="explanation-link">
-          <img class="arrow-right2" src="{{asset "images/arrow-right.svg"}}" />
-          <div class="div2">解説</div>
-        </div>
+      <h3 class="menu-title">目次</h3>
+      <div class="menu-container">
+        <a href="#summary-section" class="menu-item active-item" id="summary-link">
+          <span class="menu-icon">
+            <img class="arrow-right" src="{{asset "images/arrow-right.svg"}}" />
+          </span>
+          <span class="menu-text">要約</span>
+        </a>
+        <a href="#explanation-section" class="menu-item" id="explanation-link">
+          <span class="menu-icon">
+            <img class="arrow-right" src="{{asset "images/arrow-right.svg"}}" />
+          </span>
+          <span class="menu-text">解説</span>
+        </a>
       </div>
     </div>
   </div>
@@ -24,15 +28,15 @@
   <div class="content-container">
     <div class="content-row">
       <div class="column2">
-        <div class="block" id="summary-section">
-          <div class="title2">
+      <div class="block" id="summary-section">
+        <div class="title2">
             <div class="content">
-              <div class="title3">要約</div>
+          <div class="title3">要約</div>
             </div>
-          </div>
-          <div class="summary-content">
+        </div>
+        <div class="summary-content">
             {{! Display the full content for now, we'll implement content filtering via JavaScript later }}
-            {{{content}}}
+          {{{content}}}
           </div>
         </div>
       </div>
@@ -68,20 +72,20 @@
     
     <div class="content-row">
       <div class="column2">
-        <div class="block" id="explanation-section">
-          <div class="title2">
+      <div class="block" id="explanation-section">
+        <div class="title2">
             <div class="content">
-              <div class="title3">解説</div>
-            </div>
+          <div class="title3">解説</div>
+        </div>
           </div>
           <div class="block2">
-            <div class="explanation-content">
+        <div class="explanation-content">
               {{! For now, using the same content - will be filtered with frontend JavaScript }}
             </div>
-          </div>
         </div>
       </div>
-      
+    </div>
+    
       <div class="column3 explanation-sidebar">
         {{! Expert 2 }}
         <div class="frame-27">
@@ -99,12 +103,12 @@
             </div>
           </div>
           <div class="frame-20">
-            <img class="play" src="{{asset "images/play.svg"}}" />
+        <img class="play" src="{{asset "images/play.svg"}}" />
             <div class="_0-00-3-26">0:00 / 3:26</div>
-            <div class="rectangle-2"></div>
-            <div class="frame-22">
-              <img class="volume-high" src="{{asset "images/volume-high.svg"}}" />
-              <img class="more-vertical" src="{{asset "images/more-vertical.svg"}}" />
+        <div class="rectangle-2"></div>
+        <div class="frame-22">
+          <img class="volume-high" src="{{asset "images/volume-high.svg"}}" />
+          <img class="more-vertical" src="{{asset "images/more-vertical.svg"}}" />
             </div>
           </div>
         </div>

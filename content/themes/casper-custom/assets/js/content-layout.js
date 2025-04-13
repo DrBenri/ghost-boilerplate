@@ -63,28 +63,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const summarySection = document.getElementById('summary-section');
   const explanationSection = document.getElementById('explanation-section');
   
-  // Set active item style with improved visual feedback
+  // Set active item style
   function setActiveItem(activeItem) {
     // Reset all items
-    document.querySelectorAll('.item').forEach(item => {
+    document.querySelectorAll('.menu-item').forEach(item => {
       item.classList.remove('active-item');
-      
-      // Reset any additional active styles if needed
-      const arrow = item.querySelector('.arrow-right, .arrow-right2');
-      if (arrow) {
-        // No need to reset transform as it's handled by CSS transitions
-      }
     });
     
     // Set active item
     if (activeItem) {
       activeItem.classList.add('active-item');
-      
-      // Add animation to indicate the item was clicked
-      activeItem.style.animation = 'pulse 0.5s';
-      setTimeout(() => {
-        activeItem.style.animation = '';
-      }, 500);
     }
   }
   
