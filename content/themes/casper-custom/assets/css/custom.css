@@ -161,6 +161,7 @@ body,
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   z-index: var(--z-index-elevated);
+  height: 436px; /* Set desktop height */
 }
 
 .banner-content-wrapper {
@@ -662,8 +663,9 @@ body,
 @media (max-width: 992px) {
   .banner {
     height: auto;
-    min-height: 450px;
-    margin-bottom: 80px;
+    min-height: 400px;
+    margin-bottom: 60px;
+    position: relative;
   }
   
   .header {
@@ -671,23 +673,50 @@ body,
   }
   
   .banner-container {
-    flex-direction: column;
+    flex-direction: row;
     gap: var(--spacing-xl);
-    align-items: flex-start;
-    padding: var(--spacing-xl);
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
     width: calc(100% - 48px);
-    top: 100px;
+    top: 80px;
+    height: 280px;
+    border-width: 2px;
   }
   
   .banner-content-wrapper {
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items: flex-start;
+    width: 180px;
+    flex-shrink: 0;
   }
   
   .banner-image-wrapper {
-    width: 200px;
-    height: 280px;
+    width: 160px;
+    height: 220px;
+  }
+  
+  .banner-image-caption {
+    padding: 10px;
+  }
+  
+  .banner-person-name {
+    font-size: var(--font-size-md);
+  }
+  
+  .banner-person-title-wrapper {
+    margin-top: var(--spacing-sm);
+    text-align: left;
+    width: 100%;
+  }
+  
+  .banner-person-title {
+    font-size: var(--font-size-md);
+  }
+  
+  .banner-content {
+    flex: 1;
+    max-width: calc(100% - 200px);
   }
   
   .banner-title {
@@ -710,12 +739,6 @@ body,
   
   .banner-decoration {
     display: none;
-  }
-  
-  .banner-person-title-wrapper {
-    text-align: center;
-    margin-top: var(--spacing-sm);
-    width: 100%;
   }
   
   .footer-content {
@@ -864,6 +887,7 @@ body,
     border-width: 2px;
     width: calc(100% - 40px);
     max-width: 728px;
+    height: 280px; /* Set tablet height */
   }
   
   .banner-image-wrapper {
@@ -960,6 +984,7 @@ body,
     width: calc(100% - 32px);
     top: 60px;
     flex-direction: column;
+    height: 140px; /* Set mobile height */
   }
   
   .banner-content-wrapper {
@@ -1094,7 +1119,6 @@ body,
   
   .banner-container {
     width: calc(100% - 24px);
-    margin: 20px auto 40px;
     left: 50%;
     transform: translateX(-50%);
     padding: 10px;
