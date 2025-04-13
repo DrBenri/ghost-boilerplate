@@ -160,6 +160,7 @@ body,
   transform: translateX(-50%);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
+  z-index: var(--z-index-elevated);
 }
 
 .banner-content-wrapper {
