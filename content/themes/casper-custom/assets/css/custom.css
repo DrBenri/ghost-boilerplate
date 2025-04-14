@@ -879,7 +879,7 @@ body,
 /* Tablets (768px) */
 @media (max-width: 768px) {
   .site-content {
-    padding: 0 20px;
+    padding: unset;
   }
   
   .custom-article-title {

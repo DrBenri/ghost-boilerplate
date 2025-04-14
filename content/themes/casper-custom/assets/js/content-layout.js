@@ -15,15 +15,23 @@ document.addEventListener('DOMContentLoaded', function() {
   // Handle fixed menu positioning on scroll
   function handleMenuPosition() {
     if (!menu || !column) return;
-    
+
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
+    // add menu height to menuOffsetTop
+    menuOffsetTop = menu.offsetTop + 2 * menu.offsetHeight;
+
     if (scrollTop > menuOffsetTop) {
       menu.classList.add('menu-fixed');
-      // Preserve original width to maintain consistent styling
-      menu.style.width = '';
+      menu.style.position = 'fixed';
+      menu.style.top = '0';
+      menu.style.left = `${column.getBoundingClientRect().left}px`;
+      menu.style.width = `${column.offsetWidth}px`;
+      menu.style.zIndex = '1000';
     } else {
       menu.classList.remove('menu-fixed');
+      menu.style.position = '';
+      menu.style.top = '';
+      menu.style.left = '';
       menu.style.width = '';
     }
   }
