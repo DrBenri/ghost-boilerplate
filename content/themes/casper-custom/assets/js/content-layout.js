@@ -42,12 +42,15 @@ document.addEventListener('DOMContentLoaded', function() {
   function calculateMenuFixedStyles() {
     if (!menu || !column) return;
     
-    // Get column position relative to the viewport
+    // Get column position precisely
     const columnRect = column.getBoundingClientRect();
+    const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
     
+    // More accurate position calculation
     menuFixedStyles = {
-      left: `${columnRect.left}px`,
-      width: `${column.offsetWidth}px`
+      left: `${columnRect.left + scrollX}px`, // Add scroll offset for accurate absolute position
+      width: `${column.offsetWidth}px`,
+      initialTop: `${column.offsetTop}px`
     };
   }
   
@@ -56,56 +59,99 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!menu || !column || menuInitialPosition === undefined) return;
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    // Calculate dynamic threshold with a small buffer for smoother transition
-    const buffer = 20; // pixels of additional buffer
-    const threshold = menuInitialPosition - buffer;
+    
+    // Avoid unnecessary calculations by using requestAnimationFrame
+    if (!window.requestAnimationFrame) {
+      // Fallback for browsers that don't support requestAnimationFrame
+      simpleMenuPositioning(scrollTop);
+      return;
+    }
+    
+    // Use requestAnimationFrame for smoother updates
+    window.requestAnimationFrame(() => {
+      // Use a consistent threshold that won't change
+      const threshold = menuInitialPosition - 20;
+      
+      // Get current column position for accurate positioning
+      const columnRect = column.getBoundingClientRect();
+      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+      
+      // Calculate exact position to prevent jumps
+      const leftPosition = `${columnRect.left}px`;
+      const columnWidth = `${column.offsetWidth}px`;
+      
+      if (scrollTop > threshold) {
+        if (!menu.classList.contains('menu-fixed')) {
+          // Save the current position before adding fixed positioning
+          menuFixedStyles.currentTop = menu.style.top || '';
 
-    // Recalculate position on every scroll for accuracy
-    calculateMenuFixedStyles();
-
-    if (scrollTop > threshold) {
-      if (!menu.classList.contains('menu-fixed')) {
-        // Add transition class first before adding fixed positioning
-        menu.classList.add('menu-transition');
-        
-        // Force a reflow to ensure transition applies
-        void menu.offsetWidth;
-        
-        // Then apply fixed positioning after a short delay
-        setTimeout(() => {
-          menu.classList.add('menu-fixed');
-          
-          // Apply fixed position styles
-          Object.assign(menu.style, {
-            position: 'fixed',
-            top: '0',
-            left: menuFixedStyles.left,
-            width: menuFixedStyles.width,
-            zIndex: '1000'
+          // Apply all styles at once to avoid reflow/repaint
+          requestAnimationFrame(() => {
+            // Apply fixed styles atomically to prevent flicker
+            menu.classList.add('menu-transition');
+            menu.classList.add('menu-fixed');
+            
+            Object.assign(menu.style, {
+              position: 'fixed',
+              top: '0',
+              left: leftPosition,
+              width: columnWidth
+            });
           });
-        }, 5);
+        } else {
+          // Just update position for smoother tracking
+          menu.style.left = leftPosition;
+          menu.style.width = columnWidth;
+        }
       } else {
-        // Just update position if already fixed
-        menu.style.left = menuFixedStyles.left;
+        if (menu.classList.contains('menu-fixed')) {
+          // Remove fixed positioning in a single operation
+          requestAnimationFrame(() => {
+            // Reset to original styles
+            Object.assign(menu.style, {
+              position: '',
+              top: '',
+              left: '',
+              width: ''
+            });
+            
+            menu.classList.remove('menu-fixed');
+            
+            // Keep transition briefly for smooth return
+            setTimeout(() => {
+              menu.classList.remove('menu-transition');
+            }, 300);
+          });
+        }
       }
+    });
+  }
+  
+  // Fallback simpler positioning for older browsers
+  function simpleMenuPositioning(scrollTop) {
+    const threshold = menuInitialPosition - 10;
+    
+    if (scrollTop > threshold) {
+      calculateMenuFixedStyles();
+      menu.classList.add('menu-fixed');
+      
+      Object.assign(menu.style, {
+        position: 'fixed',
+        top: '0',
+        left: menuFixedStyles.left,
+        width: menuFixedStyles.width,
+        zIndex: '1000'
+      });
     } else {
-      if (menu.classList.contains('menu-fixed')) {
-        // Remove fixed positioning but keep transition
-        Object.assign(menu.style, {
-          position: '',
-          top: '',
-          left: '',
-          width: '',
-          zIndex: ''
-        });
-        
-        menu.classList.remove('menu-fixed');
-        
-        // Remove transition class after transition completes
-        setTimeout(() => {
-          menu.classList.remove('menu-transition');
-        }, 300);
-      }
+      menu.classList.remove('menu-fixed');
+      
+      Object.assign(menu.style, {
+        position: '',
+        top: '',
+        left: '',
+        width: '',
+        zIndex: ''
+      });
     }
   }
   
@@ -545,8 +591,25 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize everything
   function init() {
-    // Calculate initial menu styles
+    // Calculate initial menu styles before doing anything else
     calculateMenuFixedStyles();
+    
+    // Apply fixed positioning immediately if page is already scrolled
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const threshold = menuInitialPosition - 20;
+    
+    // Pre-position the menu if page loads scrolled
+    if (scrollTop > threshold && menu && column) {
+      // Skip transition for initial positioning
+      Object.assign(menu.style, {
+        position: 'fixed',
+        top: '0',
+        left: menuFixedStyles.left,
+        width: menuFixedStyles.width,
+        zIndex: '1000'
+      });
+      menu.classList.add('menu-fixed');
+    }
     
     // Parse content into sections
     parseContentSections();
