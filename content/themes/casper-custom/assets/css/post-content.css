@@ -299,7 +299,13 @@
   align-self: stretch;
   flex-shrink: 0;
   position: relative;
+  transition: background-color 0.2s ease;
 }
+
+.audio-container:hover {
+  background: #e5e6e7;
+}
+
 .play {
   flex-shrink: 0;
   width: 20px;
@@ -367,7 +373,7 @@
 .content-container {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
   width: 100%;
 }
 
@@ -416,4 +422,84 @@
   .column2, .column3, .summary-sidebar, .explanation-sidebar {
     width: 100%;
   }
+}
+
+/* Audio player button styles */
+.play-button {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  aspect-ratio: 1;
+}
+
+.play-button:hover {
+  transform: scale(1.1);
+}
+
+.play-button:active {
+  transform: scale(0.95);
+}
+
+/* Style for progress bar */
+.progress-bar {
+  background: var(--neutral-03, #e0e0e0);
+  border-radius: 16px;
+  flex: 1;
+  height: 6px;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+/* Audio timestamp style */
+.audio-timestamp {
+  color: var(--neutral-05, #5e5e5e);
+  text-align: left;
+  font-family: "NotoSansJp-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  margin: 0 12px;
+  width: 85px; /* Fixed width to prevent layout shifts */
+}
+
+/* Audio controls container */
+.audio-controls {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+}
+
+/* Volume and options buttons */
+.volume-icon, .more-options {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  aspect-ratio: 1;
+}
+
+.volume-icon:hover, .more-options:hover {
+  opacity: 0.8;
+}
+
+/* Audio options dropdown styling */
+.audio-options-dropdown {
+  position: absolute;
+  right: 0;
+  top: 30px;
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  padding: 8px 0;
+  z-index: 1000;
+  min-width: 120px;
 }

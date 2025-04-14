@@ -240,6 +240,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Setup playback control
         if (customPlayBtn) {
+          // Create or find necessary images
+          const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
+          const playImageSrc = imgPath + 'play.svg';
+          const pauseImageSrc = imgPath + 'pause.svg';
+          
+          // Preload the pause image to avoid flickering
+          const pauseImage = new Image();
+          pauseImage.src = pauseImageSrc;
+          
           customPlayBtn.addEventListener('click', function() {
             if (audioPlayerEl.paused) {
               audioPlayerEl.play();
@@ -250,14 +259,18 @@ document.addEventListener('DOMContentLoaded', function() {
           
           // Update play button state when audio state changes
           audioPlayerEl.addEventListener('play', function() {
-            const pausePath = customPlayBtn.src.replace('play.svg', 'pause.svg');
-            customPlayBtn.src = pausePath;
+            customPlayBtn.src = pauseImageSrc;
             customPlayBtn.setAttribute('alt', 'Pause');
           });
           
           audioPlayerEl.addEventListener('pause', function() {
-            const playPath = customPlayBtn.src.replace('pause.svg', 'play.svg');
-            customPlayBtn.src = playPath;
+            customPlayBtn.src = playImageSrc;
+            customPlayBtn.setAttribute('alt', 'Play');
+          });
+          
+          // Also handle ended event
+          audioPlayerEl.addEventListener('ended', function() {
+            customPlayBtn.src = playImageSrc;
             customPlayBtn.setAttribute('alt', 'Play');
           });
         }
