@@ -38,44 +38,74 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
   
-  // Calculate and cache menu fixed positioning values
+  // Calculate and cache menu fixed positioning values - now more accurate
   function calculateMenuFixedStyles() {
     if (!menu || !column) return;
     
+    // Get column position relative to the viewport
+    const columnRect = column.getBoundingClientRect();
+    
     menuFixedStyles = {
-      left: `${column.getBoundingClientRect().left}px`,
+      left: `${columnRect.left}px`,
       width: `${column.offsetWidth}px`
     };
   }
   
-  // Handle fixed menu positioning on scroll
+  // Handle fixed menu positioning on scroll with smoother transition
   function handleMenuPosition() {
     if (!menu || !column || menuInitialPosition === undefined) return;
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    // Use initial position plus some offset for better user experience
-    const threshold = menuInitialPosition + (menu.offsetHeight / 2);
+    // Calculate dynamic threshold with a small buffer for smoother transition
+    const buffer = 20; // pixels of additional buffer
+    const threshold = menuInitialPosition - buffer;
+
+    // Recalculate position on every scroll for accuracy
+    calculateMenuFixedStyles();
 
     if (scrollTop > threshold) {
-      menu.classList.add('menu-fixed');
-      // Apply cached fixed position styles
-      Object.assign(menu.style, {
-        position: 'fixed',
-        top: '0',
-        left: menuFixedStyles.left,
-        width: menuFixedStyles.width,
-        zIndex: '1000'
-      });
+      if (!menu.classList.contains('menu-fixed')) {
+        // Add transition class first before adding fixed positioning
+        menu.classList.add('menu-transition');
+        
+        // Force a reflow to ensure transition applies
+        void menu.offsetWidth;
+        
+        // Then apply fixed positioning after a short delay
+        setTimeout(() => {
+          menu.classList.add('menu-fixed');
+          
+          // Apply fixed position styles
+          Object.assign(menu.style, {
+            position: 'fixed',
+            top: '0',
+            left: menuFixedStyles.left,
+            width: menuFixedStyles.width,
+            zIndex: '1000'
+          });
+        }, 5);
+      } else {
+        // Just update position if already fixed
+        menu.style.left = menuFixedStyles.left;
+      }
     } else {
-      menu.classList.remove('menu-fixed');
-      // Reset styles using CSS class instead of individual properties
-      Object.assign(menu.style, {
-        position: '',
-        top: '',
-        left: '',
-        width: '',
-        zIndex: ''
-      });
+      if (menu.classList.contains('menu-fixed')) {
+        // Remove fixed positioning but keep transition
+        Object.assign(menu.style, {
+          position: '',
+          top: '',
+          left: '',
+          width: '',
+          zIndex: ''
+        });
+        
+        menu.classList.remove('menu-fixed');
+        
+        // Remove transition class after transition completes
+        setTimeout(() => {
+          menu.classList.remove('menu-transition');
+        }, 300);
+      }
     }
   }
   

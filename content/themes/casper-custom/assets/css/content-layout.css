@@ -56,13 +56,22 @@
   overflow: hidden; /* Prevent menu content from causing overflow */
   z-index: 100; /* Ensure menu stays above other content */
   transition: none; /* Remove transition to keep style consistent */
+  /* Add stable positioning context */
+  position: relative;
+  z-index: 10;
 }
 
-/* Class to apply when scrolled down */
+.menu-transition {
+  transition: top 0.3s ease, left 0.3s ease, width 0.3s ease;
+  will-change: position, top, left;
+}
+
 .menu-fixed {
   position: fixed;
   top: 20px;
   /* No width override here to preserve original style */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff; /* Add background to avoid content showing through */
 }
 
 .content-container {
