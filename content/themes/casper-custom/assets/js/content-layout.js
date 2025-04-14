@@ -85,8 +85,33 @@ document.addEventListener('DOMContentLoaded', function() {
     return styles;
   };
 
+  // Device detection for responsive handling
+  function isDesktopView() {
+    return window.innerWidth > 1024;
+  }
+  
+  function isTabletView() {
+    return window.innerWidth <= 1024 && window.innerWidth > 768;
+  }
+
   function handleColumnPosition() {
     if (!column) return;
+
+    // Only apply fixed column in desktop view
+    if (!isDesktopView()) {
+      // Remove fixed positioning if screen size changes
+      if (column.classList.contains('column-fixed')) {
+        column.classList.remove('column-fixed');
+        column.style.cssText = ''; // Clear all inline styles
+        
+        // Hide placeholder if it exists
+        const placeholder = document.querySelector('.column-placeholder');
+        if (placeholder) {
+          placeholder.style.display = 'none';
+        }
+      }
+      return;
+    }
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
@@ -558,18 +583,32 @@ document.addEventListener('DOMContentLoaded', function() {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   }
   
-  // Handle window resize events
+  // Enhanced window resize handler
   const handleResize = debounce(function() {
-    calculateColumnFixedStyles();
-    
-    // Update placeholder size if it exists
-    const placeholder = document.querySelector('.column-placeholder');
-    if (placeholder && placeholder.style.display !== 'none') {
-      placeholder.style.width = `${column.offsetWidth}px`;
-      placeholder.style.height = `${column.offsetHeight}px`;
+    // Recalculate styles only in desktop view
+    if (isDesktopView()) {
+      calculateColumnFixedStyles();
+      
+      // Update placeholder size if it exists
+      const placeholder = document.querySelector('.column-placeholder');
+      if (placeholder && placeholder.style.display !== 'none') {
+        placeholder.style.width = `${column.offsetWidth}px`;
+        placeholder.style.height = `${column.offsetHeight}px`;
+      }
+      
+      handleColumnPosition();
+    } else {
+      // Ensure fixed positioning is removed on non-desktop
+      if (column && column.classList.contains('column-fixed')) {
+        column.classList.remove('column-fixed');
+        column.style.cssText = '';
+        
+        const placeholder = document.querySelector('.column-placeholder');
+        if (placeholder) {
+          placeholder.style.display = 'none';
+        }
+      }
     }
-    
-    handleColumnPosition();
   }, 250);
   
   // Set up click handlers for navigation
@@ -590,7 +629,117 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
-  
+
+  // Handle tablet layout adjustments
+  function handleTabletLayout() {
+    if (!isTabletView()) return;
+    
+    // Handle summary sidebar
+    const firstContentRow = document.querySelector('.content-row:first-of-type');
+    const summarySidebar = document.querySelector('.summary-sidebar');
+    const contentColumn = document.querySelector('.column2');
+    const summarySection = document.getElementById('summary-section');
+    
+    if (summarySidebar && contentColumn && summarySection) {
+      // Move the entire summary sidebar into the column2, at the beginning of summary section
+      summarySection.insertBefore(summarySidebar, summarySection.firstChild);
+      
+      // Apply tablet-specific styling
+      summarySidebar.style.marginBottom = '20px';
+      summarySidebar.style.width = '100%';
+      summarySidebar.style.paddingLeft = '0';
+    }
+    
+    // Handle explanation sidebar
+    const explanationSidebar = document.querySelector('.explanation-sidebar');
+    const explanationSection = document.getElementById('explanation-section');
+    
+    if (explanationSidebar && explanationSection) {
+      // Move explanation sidebar inside the explanation section
+      explanationSection.insertBefore(explanationSidebar, explanationSection.firstChild);
+      
+      // Style for in-section placement
+      explanationSidebar.style.marginTop = '0';
+      explanationSidebar.style.marginBottom = '20px';
+      explanationSidebar.style.width = '100%';
+      explanationSidebar.style.paddingLeft = '0';
+    }
+    
+    // Adjust audio container and avatar widths
+    const expertProfiles = document.querySelectorAll('.expert-profile');
+    expertProfiles.forEach(profile => {
+      const avatar = profile.querySelector('.expert-avatar');
+      const audioContainer = profile.querySelector('.audio-container');
+      
+      if (avatar && audioContainer) {
+        profile.style.display = 'flex';
+        profile.style.flexDirection = 'row';
+        avatar.style.width = '50%';
+        avatar.style.marginBottom = '0';
+        audioContainer.style.width = '50%';
+        audioContainer.style.flexGrow = '1';
+      }
+    });
+  }
+
+  // Handle resize events for responsive layout
+  const handleResponsiveLayout = debounce(function() {
+    if (isTabletView()) {
+      handleTabletLayout();
+    } else {
+      // Reset to desktop layout if needed
+      resetToDesktopLayout();
+    }
+  }, 250);
+
+  // Reset layout to desktop version
+  function resetToDesktopLayout() {
+    if (window.innerWidth <= 768) return; // Don't reset for mobile
+    
+    // Reset summary sidebar
+    const summarySidebar = document.querySelector('.summary-sidebar');
+    const firstContentRow = document.querySelector('.content-row:first-of-type');
+    
+    if (summarySidebar && firstContentRow) {
+      // Move sidebar back to original position at the end of first row
+      firstContentRow.appendChild(summarySidebar);
+      
+      // Reset styles
+      summarySidebar.style.marginBottom = '';
+      summarySidebar.style.width = '';
+      summarySidebar.style.paddingLeft = '';
+    }
+    
+    // Reset explanation sidebar
+    const explanationSidebar = document.querySelector('.explanation-sidebar');
+    const secondContentRow = document.querySelector('.content-row:nth-of-type(2)');
+    
+    if (explanationSidebar && secondContentRow) {
+      // Move explanation sidebar back to second row
+      secondContentRow.appendChild(explanationSidebar);
+      
+      // Reset styles
+      explanationSidebar.style.marginTop = '';
+      explanationSidebar.style.width = '';
+      explanationSidebar.style.paddingLeft = '';
+    }
+    
+    // Reset expert profile styles
+    document.querySelectorAll('.expert-profile').forEach(profile => {
+      profile.style.flexDirection = '';
+      
+      const avatar = profile.querySelector('.expert-avatar');
+      const audioContainer = profile.querySelector('.audio-container');
+      
+      if (avatar && audioContainer) {
+        avatar.style.width = '';
+        avatar.style.marginBottom = '';
+        audioContainer.style.width = '';
+        audioContainer.style.flexGrow = '';
+      }
+    });
+  }
+
   // Initialize everything
   function init() {
     // Calculate initial column styles
@@ -615,6 +764,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (summaryLink) {
       setActiveItem(summaryLink);
     }
+
+    // Check if tablet and apply layout
+    handleResponsiveLayout();
+    
+    // Add resize listener for responsive layout
+    window.addEventListener('resize', handleResponsiveLayout, { passive: true });
   }
   
   // Start everything

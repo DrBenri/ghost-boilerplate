@@ -424,6 +424,32 @@
   }
 }
 
+/* Add tablet-specific styles to reduce gaps */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .column2 {
+    gap: 0px; /* Reduced from 57px for tablet view */
+  }
+  
+  .block {
+    gap: 0px; /* Reduced from 24px */
+  }
+  
+  .title2 {
+    margin-bottom: 5px;
+  }
+  
+  /* Reduce spacing between elements inside content blocks */
+  .column2 > div {
+    margin-bottom: 15px;
+  }
+  
+  /* Reduce spacing in block2 (explanation content) */
+  .block2 {
+    padding: 15px;
+    gap: 2px;
+  }
+}
+
 /* Audio player button styles */
 .play-button {
   flex-shrink: 0;

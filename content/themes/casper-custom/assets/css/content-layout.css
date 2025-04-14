@@ -54,7 +54,7 @@
 .menu {
   position: relative;
   top: 0;
-  padding: 15px;
+  padding: 0 15px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
@@ -359,5 +359,77 @@
   
   .menu-text {
     font-size: 14px;
+  }
+}
+
+/* Tablet-specific styles */
+@media screen and (max-width: 1024px) and (min-width: 769px) {
+  .wrapper {
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .column {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+  
+  /* Content container and columns layout */
+  .content-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .content-row {
+    flex-direction: column;
+    display: flex;
+  }
+  
+  /* Move summary sidebar before content */
+  .content-row:first-of-type .column3.summary-sidebar {
+    order: -1;
+    margin-bottom: 20px;
+  }
+  
+  /* General column styling */
+  .column2, .column3 {
+    width: 100%;
+    margin-right: 0;
+  }
+  
+  .column3 {
+    padding-left: 0;
+    margin-top: 20px;
+  }
+  
+  /* Expert profile adjustments for tablet */
+  .expert-profile {
+    flex-direction: row;
+    align-items: center;
+    padding: 15px;
+  }
+  
+  /* Adjust expert avatar to take up 50% of space */
+  .expert-profile .expert-avatar {
+    width: 50%;
+    margin-right: 15px;
+    margin-bottom: 0;
+  }
+  
+  /* Adjust audio container to take up 50% of space */
+  .expert-profile .audio-container {
+    width: 50%;
+    flex-grow: 1;
+  }
+  
+  /* Ensure proper spacing in audio container */
+  .audio-container .progress-bar {
+    min-width: 60px; /* Ensure progress bar has minimum width */
+  }
+  
+  .audio-container .audio-timestamp {
+    min-width: 75px; /* Ensure timestamp has enough space */
   }
 }
