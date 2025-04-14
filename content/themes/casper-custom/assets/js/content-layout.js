@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const explanationSection = document.getElementById('explanation-section');
   const audioContainerElements = document.querySelectorAll('.audio-container');
   const audioCards = document.querySelectorAll('.kg-card.kg-audio-card');
+  const expertProfiles = document.querySelectorAll('.expert-profile');
   
   // Initial menu position - only calculate once
   const menuInitialPosition = menu && menu.offsetTop;
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 100);
   
-  // Enhanced function to adapt expert profiles with audio cards
+  // Enhanced function to fully integrate audio cards with custom UI
   function moveAudioToFrames() {
     if (!audioContainerElements.length || !audioCards.length) return;
     
@@ -216,131 +217,197 @@ document.addEventListener('DOMContentLoaded', function() {
       
       audioContainerElements.forEach((container, index) => {
         const audioCard = audioCards[index]; // Match audio card by index
-        if (audioCard) {
-          // Get the parent expert profile if available
-          const expertProfile = container.closest('.expert-profile');
-          
-          // Extract information from audio card for enhancing expert profile
-          if (expertProfile) {
-            const audioTitle = audioCard.querySelector('.kg-audio-title')?.textContent;
-            const audioPlayerEl = audioCard.querySelector('audio');
-            
-            // If we have an audio title and no expert name is set, use it
-            const expertNameEl = expertProfile.querySelector('.expert-name');
-            if (audioTitle && expertNameEl && expertNameEl.textContent.trim() === '') {
-              expertNameEl.textContent = audioTitle;
-            }
-            
-            // Setup event listeners for our custom play button if it exists
-            const customPlayBtn = expertProfile.querySelector('.play-button');
-            if (customPlayBtn && audioPlayerEl) {
-              customPlayBtn.addEventListener('click', function() {
-                if (audioPlayerEl.paused) {
-                  audioPlayerEl.play();
-                } else {
-                  audioPlayerEl.pause();
-                }
-              });
-              
-              // Update play button state when audio state changes
-              audioPlayerEl.addEventListener('play', function() {
-                customPlayBtn.src = customPlayBtn.src.replace('play.svg', 'pause.svg');
-              });
-              
-              audioPlayerEl.addEventListener('pause', function() {
-                customPlayBtn.src = customPlayBtn.src.replace('pause.svg', 'play.svg');
-              });
-              
-              // Update timestamp display if available
-              if (expertProfile.querySelector('.audio-timestamp')) {
-                audioPlayerEl.addEventListener('timeupdate', function() {
-                  const currentTime = formatTime(audioPlayerEl.currentTime);
-                  const duration = formatTime(audioPlayerEl.duration);
-                  expertProfile.querySelector('.audio-timestamp').textContent = 
-                    `${currentTime} / ${duration}`;
-                  
-                  // Update progress bar if it exists
-                  const progressBar = expertProfile.querySelector('.progress-bar');
-                  if (progressBar) {
-                    const percent = (audioPlayerEl.currentTime / audioPlayerEl.duration) * 100;
-                    progressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
-                  }
-                });
-              }
-            }
-          }
-          
-          // Clear container and move the audio card
-          container.innerHTML = '';
-          container.appendChild(audioCard);
-          container.style.display = 'block';
-          
-          // Apply custom styling to make audio card fit our design
-          const audioPlayer = audioCard.querySelector('.kg-audio-player');
-          if (audioPlayer) {
-            // Hide the default Ghost audio card avatar/thumbnail
-            const thumbnail = audioCard.querySelector('.kg-audio-thumbnail');
-            if (thumbnail) {
-              thumbnail.style.display = 'none';
-            }
-            
-            // Style the audio player to match our UI
-            audioPlayer.style.backgroundColor = 'transparent';
-            audioPlayer.style.padding = '0';
-            audioPlayer.style.border = 'none';
-            audioPlayer.style.boxShadow = 'none';
-            
-            // Hide title if we're displaying it in our expert profile
-            const title = audioCard.querySelector('.kg-audio-title');
-            if (title) {
-              title.style.display = 'none';
-            }
-            
-            // Style the play button and duration elements
-            const playButton = audioCard.querySelector('.kg-audio-play-icon');
-            if (playButton) {
-              // If we have a custom play button, hide the Ghost one
-              if (expertProfile && expertProfile.querySelector('.play-button')) {
-                playButton.parentElement.style.display = 'none';
-              } else {
-                playButton.parentElement.style.width = '36px';
-                playButton.parentElement.style.height = '36px';
-                playButton.parentElement.style.backgroundColor = '#f0f0f0';
-              }
-            }
-            
-            // Hide default duration element if we're using our custom one
-            const duration = audioCard.querySelector('.kg-audio-duration');
-            if (duration && expertProfile && expertProfile.querySelector('.audio-timestamp')) {
-              duration.style.display = 'none';
-            }
-            
-            // Style the progress bar
-            const progressContainer = audioCard.querySelector('.kg-audio-seek-slider');
-            if (progressContainer && expertProfile && expertProfile.querySelector('.progress-bar')) {
-              progressContainer.style.display = 'none';
-            }
-          }
-          
-          // Ensure player controls are properly initialized
-          const audioPlayerEl = container.querySelector('audio');
-          if (audioPlayerEl) {
-            const currentTime = audioPlayerEl.currentTime;
-            audioPlayerEl.load();
-            audioPlayerEl.currentTime = currentTime;
-            
-            // Hide audio element controls if we're using our custom UI
-            if (expertProfile) {
-              audioPlayerEl.controls = false;
-              audioPlayerEl.style.display = 'none';
-            }
-          }
-        } else {
+        if (!audioCard) {
           container.style.display = 'none';
+          return;
+        }
+        
+        // Get Ghost audio elements
+        const audioPlayerEl = audioCard.querySelector('audio');
+        const ghostPlayButton = audioCard.querySelector('.kg-audio-play-icon');
+        
+        if (!audioPlayerEl) {
+          container.style.display = 'none';
+          return;
+        }
+        
+        // Get custom UI elements
+        const customPlayBtn = container.querySelector('.play-button');
+        const customTimestamp = container.querySelector('.audio-timestamp');
+        const customProgressBar = container.querySelector('.progress-bar');
+        const customVolumeIcon = container.querySelector('.volume-icon');
+        const customMoreOptionsIcon = container.querySelector('.more-options');
+        
+        // Setup playback control
+        if (customPlayBtn) {
+          customPlayBtn.addEventListener('click', function() {
+            if (audioPlayerEl.paused) {
+              audioPlayerEl.play();
+            } else {
+              audioPlayerEl.pause();
+            }
+          });
+          
+          // Update play button state when audio state changes
+          audioPlayerEl.addEventListener('play', function() {
+            const pausePath = customPlayBtn.src.replace('play.svg', 'pause.svg');
+            customPlayBtn.src = pausePath;
+            customPlayBtn.setAttribute('alt', 'Pause');
+          });
+          
+          audioPlayerEl.addEventListener('pause', function() {
+            const playPath = customPlayBtn.src.replace('pause.svg', 'play.svg');
+            customPlayBtn.src = playPath;
+            customPlayBtn.setAttribute('alt', 'Play');
+          });
+        }
+        
+        // Set up volume control
+        if (customVolumeIcon) {
+          let isMuted = false;
+          customVolumeIcon.addEventListener('click', function() {
+            if (isMuted) {
+              audioPlayerEl.volume = 1.0; // Restore volume
+              customVolumeIcon.src = customVolumeIcon.src.replace('volume-mute.svg', 'volume-high.svg');
+              isMuted = false;
+            } else {
+              audioPlayerEl.volume = 0; // Mute
+              customVolumeIcon.src = customVolumeIcon.src.replace('volume-high.svg', 'volume-mute.svg');
+              isMuted = true;
+            }
+          });
+        }
+        
+        // More options button
+        if (customMoreOptionsIcon) {
+          customMoreOptionsIcon.addEventListener('click', function() {
+            // Create a simple dropdown menu
+            const dropdown = document.createElement('div');
+            dropdown.classList.add('audio-options-dropdown');
+            dropdown.style.position = 'absolute';
+            dropdown.style.right = '0';
+            dropdown.style.backgroundColor = '#fff';
+            dropdown.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
+            dropdown.style.borderRadius = '4px';
+            dropdown.style.padding = '8px 0';
+            dropdown.style.zIndex = '1000';
+            
+            const options = [
+              { text: '0.75x Speed', action: () => { audioPlayerEl.playbackRate = 0.75; } },
+              { text: '1.0x Speed', action: () => { audioPlayerEl.playbackRate = 1.0; } },
+              { text: '1.25x Speed', action: () => { audioPlayerEl.playbackRate = 1.25; } },
+              { text: '1.5x Speed', action: () => { audioPlayerEl.playbackRate = 1.5; } },
+              { text: '2.0x Speed', action: () => { audioPlayerEl.playbackRate = 2.0; } },
+            ];
+            
+            options.forEach(option => {
+              const item = document.createElement('div');
+              item.textContent = option.text;
+              item.style.padding = '8px 16px';
+              item.style.cursor = 'pointer';
+              item.style.fontSize = '14px';
+              
+              item.addEventListener('click', function() {
+                option.action();
+                dropdown.remove();
+              });
+              
+              item.addEventListener('mouseenter', function() {
+                item.style.backgroundColor = '#f0f0f0';
+              });
+              
+              item.addEventListener('mouseleave', function() {
+                item.style.backgroundColor = '';
+              });
+              
+              dropdown.appendChild(item);
+            });
+            
+            // Position and add the dropdown
+            const controls = customMoreOptionsIcon.closest('.audio-controls');
+            if (controls) {
+              controls.style.position = 'relative';
+              controls.appendChild(dropdown);
+              
+              // Close when clicking outside
+              function closeDropdown(e) {
+                if (!dropdown.contains(e.target) && e.target !== customMoreOptionsIcon) {
+                  dropdown.remove();
+                  document.removeEventListener('click', closeDropdown);
+                }
+              }
+              
+              setTimeout(() => {
+                document.addEventListener('click', closeDropdown);
+              }, 0);
+            }
+          });
+        }
+        
+        // Update timestamp and progress bar
+        if (customTimestamp || customProgressBar) {
+          audioPlayerEl.addEventListener('timeupdate', function() {
+            const currentTime = formatTime(audioPlayerEl.currentTime);
+            const duration = formatTime(audioPlayerEl.duration || 0);
+            
+            if (customTimestamp) {
+              customTimestamp.textContent = `${currentTime} / ${duration}`;
+            }
+            
+            if (customProgressBar) {
+              const percent = ((audioPlayerEl.currentTime / audioPlayerEl.duration) || 0) * 100;
+              customProgressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
+              
+              // Make progress bar interactive - allow seeking
+              if (!customProgressBar.getAttribute('listener-added')) {
+                customProgressBar.style.cursor = 'pointer';
+                customProgressBar.addEventListener('click', function(e) {
+                  const rect = customProgressBar.getBoundingClientRect();
+                  const clickPosition = (e.clientX - rect.left) / rect.width;
+                  audioPlayerEl.currentTime = clickPosition * audioPlayerEl.duration;
+                });
+                customProgressBar.setAttribute('listener-added', 'true');
+              }
+            }
+          });
+          
+          // Ensure duration is available as soon as possible
+          audioPlayerEl.addEventListener('loadedmetadata', function() {
+            if (customTimestamp) {
+              customTimestamp.textContent = `0:00 / ${formatTime(audioPlayerEl.duration)}`;
+            }
+          });
+        }
+        
+        // Hide the original audio card but keep its functionality
+        container.appendChild(audioCard);
+        audioCard.style.display = 'none';
+        audioPlayerEl.style.display = 'none';
+        
+        // Show the custom container
+        container.style.display = 'flex';
+        container.style.alignItems = 'center';
+        container.style.width = '100%';
+        
+        // Style the timestamp
+        if (customTimestamp) {
+          customTimestamp.style.flex = '0 0 auto';
+          customTimestamp.style.margin = '0 10px';
+          customTimestamp.style.fontSize = '12px';
+          customTimestamp.style.color = '#666';
+        }
+        
+        // Style the progress bar
+        if (customProgressBar) {
+          customProgressBar.style.flex = '1';
+          customProgressBar.style.height = '4px';
+          customProgressBar.style.background = '#e0e0e0';
+          customProgressBar.style.borderRadius = '2px';
+          customProgressBar.style.margin = '0 10px';
         }
       });
     } catch (error) {
-      console.error('Error adapting expert profiles with audio:', error);
+      console.error('Error integrating audio UI:', error);
       // Attempt to restore original state in case of error
       try {
         Array.from(audioCards).forEach(card => {
