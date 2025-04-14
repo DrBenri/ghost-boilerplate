@@ -206,143 +206,243 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!audioContainerElements.length || !audioCards.length) return;
     
     try {
-      // Store original locations to potentially restore them later if needed
-      const originalLocations = Array.from(audioCards).map(card => {
-        return {
-          element: card,
-          parent: card.parentNode,
-          nextSibling: card.nextSibling
-        };
+      // Extract audio sources from all Ghost audio cards
+      const audioSources = Array.from(audioCards).map(card => {
+        const audioEl = card.querySelector('audio');
+        let sources = [];
+        
+        if (audioEl) {
+          if (audioEl.src) {
+            // Direct src attribute
+            sources.push({
+              url: audioEl.src,
+              type: audioEl.getAttribute('type') || 'audio/mpeg'
+            });
+          } else {
+            // Source elements
+            const sourceElements = audioEl.querySelectorAll('source');
+            sources = Array.from(sourceElements).map(source => ({
+              url: source.src,
+              type: source.type || 'audio/mpeg'
+            }));
+          }
+          
+          // Get title if available
+          const titleEl = card.querySelector('.kg-audio-title');
+          const title = titleEl ? titleEl.textContent.trim() : '';
+          
+          return { sources, title };
+        }
+        
+        return { sources: [], title: '' };
       });
       
+      // Create custom audio players with raw HTML5 audio elements
       audioContainerElements.forEach((container, index) => {
-        const audioCard = audioCards[index]; // Match audio card by index
-        if (!audioCard) {
+        // Skip if no audio source is available for this container
+        if (!audioSources[index] || !audioSources[index].sources.length) {
           container.style.display = 'none';
           return;
         }
         
-        // Get Ghost audio elements
-        const audioPlayerEl = audioCard.querySelector('audio');
-        const ghostPlayButton = audioCard.querySelector('.kg-audio-play-icon');
-        
-        if (!audioPlayerEl) {
-          container.style.display = 'none';
-          return;
-        }
-        
-        // Get custom UI elements
+        const audioSource = audioSources[index];
         const customPlayBtn = container.querySelector('.play-button');
         const customTimestamp = container.querySelector('.audio-timestamp');
         const customProgressBar = container.querySelector('.progress-bar');
         const customVolumeIcon = container.querySelector('.volume-icon');
         const customMoreOptionsIcon = container.querySelector('.more-options');
         
-        // Setup playback control
+        // Create new audio element
+        const audioEl = document.createElement('audio');
+        audioEl.style.display = 'none';
+        audioEl.preload = 'metadata';
+        
+        // Add sources
+        audioSource.sources.forEach(source => {
+          const sourceEl = document.createElement('source');
+          sourceEl.src = source.url;
+          sourceEl.type = source.type;
+          audioEl.appendChild(sourceEl);
+        });
+        
+        // Add the audio element to the container
+        container.appendChild(audioEl);
+        
+        // Initialize UI
+        if (customTimestamp) {
+          customTimestamp.textContent = '読み込み中...'; // "Loading..." in Japanese
+          customTimestamp.style.color = '#999';
+        }
+        
+        if (customProgressBar) {
+          customProgressBar.classList.add('loading');
+        }
+        
+        // Set up play button
         if (customPlayBtn) {
-          // Create or find necessary images
+          // Image paths
           const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
           const playImageSrc = imgPath + 'play.svg';
           const pauseImageSrc = imgPath + 'pause.svg';
           
-          // Preload the pause image to avoid flickering
+          // Preload pause image
           const pauseImage = new Image();
           pauseImage.src = pauseImageSrc;
           
+          // Play/pause toggle
           customPlayBtn.addEventListener('click', function() {
-            if (audioPlayerEl.paused) {
-              audioPlayerEl.play();
+            if (audioEl.paused) {
+              audioEl.play().catch(error => {
+                console.error('Error playing audio:', error);
+              });
             } else {
-              audioPlayerEl.pause();
+              audioEl.pause();
             }
           });
           
-          // Update play button state when audio state changes
-          audioPlayerEl.addEventListener('play', function() {
+          // Update button state
+          audioEl.addEventListener('play', function() {
             customPlayBtn.src = pauseImageSrc;
             customPlayBtn.setAttribute('alt', 'Pause');
           });
           
-          audioPlayerEl.addEventListener('pause', function() {
+          audioEl.addEventListener('pause', function() {
             customPlayBtn.src = playImageSrc;
             customPlayBtn.setAttribute('alt', 'Play');
           });
           
-          // Also handle ended event
-          audioPlayerEl.addEventListener('ended', function() {
+          audioEl.addEventListener('ended', function() {
             customPlayBtn.src = playImageSrc;
             customPlayBtn.setAttribute('alt', 'Play');
           });
         }
         
-        // Set up volume control
+        // Handle progress and timing
+        audioEl.addEventListener('timeupdate', function() {
+          const currentTime = formatTime(audioEl.currentTime);
+          const duration = formatTime(audioEl.duration || 0);
+          
+          if (customTimestamp) {
+            customTimestamp.textContent = `${currentTime} / ${duration}`;
+            customTimestamp.style.color = '#666';
+          }
+          
+          if (customProgressBar) {
+            const percent = ((audioEl.currentTime / audioEl.duration) || 0) * 100;
+            customProgressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
+            customProgressBar.classList.remove('loading');
+          }
+        });
+        
+        // Handle loading states
+        audioEl.addEventListener('loadedmetadata', function() {
+          if (customTimestamp) {
+            customTimestamp.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+            customTimestamp.style.color = '#666';
+          }
+          
+          if (customProgressBar) {
+            customProgressBar.classList.remove('loading');
+          }
+        });
+        
+        audioEl.addEventListener('waiting', function() {
+          if (customProgressBar) {
+            customProgressBar.classList.add('loading');
+          }
+        });
+        
+        // Interactive progress bar
+        if (customProgressBar) {
+          customProgressBar.style.cursor = 'pointer';
+          customProgressBar.addEventListener('click', function(e) {
+            if (audioEl.duration) {
+              const rect = customProgressBar.getBoundingClientRect();
+              const clickPosition = (e.clientX - rect.left) / rect.width;
+              audioEl.currentTime = clickPosition * audioEl.duration;
+            }
+          });
+        }
+        
+        // Volume control
         if (customVolumeIcon) {
           let isMuted = false;
           customVolumeIcon.addEventListener('click', function() {
             if (isMuted) {
-              audioPlayerEl.volume = 1.0; // Restore volume
+              audioEl.volume = 1.0;
               customVolumeIcon.src = customVolumeIcon.src.replace('volume-mute.svg', 'volume-high.svg');
               isMuted = false;
             } else {
-              audioPlayerEl.volume = 0; // Mute
+              audioEl.volume = 0;
               customVolumeIcon.src = customVolumeIcon.src.replace('volume-high.svg', 'volume-mute.svg');
               isMuted = true;
             }
           });
         }
         
-        // More options button
+        // Playback speed options
         if (customMoreOptionsIcon) {
           customMoreOptionsIcon.addEventListener('click', function() {
-            // Create a simple dropdown menu
+            // Create dropdown
             const dropdown = document.createElement('div');
             dropdown.classList.add('audio-options-dropdown');
             dropdown.style.position = 'absolute';
             dropdown.style.right = '0';
+            dropdown.style.top = '30px';
             dropdown.style.backgroundColor = '#fff';
             dropdown.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
             dropdown.style.borderRadius = '4px';
             dropdown.style.padding = '8px 0';
             dropdown.style.zIndex = '1000';
             
-            const options = [
-              { text: '0.75x Speed', action: () => { audioPlayerEl.playbackRate = 0.75; } },
-              { text: '1.0x Speed', action: () => { audioPlayerEl.playbackRate = 1.0; } },
-              { text: '1.25x Speed', action: () => { audioPlayerEl.playbackRate = 1.25; } },
-              { text: '1.5x Speed', action: () => { audioPlayerEl.playbackRate = 1.5; } },
-              { text: '2.0x Speed', action: () => { audioPlayerEl.playbackRate = 2.0; } },
+            const speedOptions = [
+              { text: '0.75x Speed', rate: 0.75 },
+              { text: '1.0x Speed', rate: 1.0 },
+              { text: '1.25x Speed', rate: 1.25 },
+              { text: '1.5x Speed', rate: 1.5 },
+              { text: '2.0x Speed', rate: 2.0 }
             ];
             
-            options.forEach(option => {
+            speedOptions.forEach(option => {
               const item = document.createElement('div');
               item.textContent = option.text;
               item.style.padding = '8px 16px';
               item.style.cursor = 'pointer';
               item.style.fontSize = '14px';
               
+              // Highlight current speed
+              if (Math.abs(audioEl.playbackRate - option.rate) < 0.01) {
+                item.style.fontWeight = 'bold';
+                item.style.backgroundColor = '#f0f0f0';
+              }
+              
               item.addEventListener('click', function() {
-                option.action();
+                audioEl.playbackRate = option.rate;
                 dropdown.remove();
               });
               
               item.addEventListener('mouseenter', function() {
-                item.style.backgroundColor = '#f0f0f0';
+                this.style.backgroundColor = '#f0f0f0';
               });
               
               item.addEventListener('mouseleave', function() {
-                item.style.backgroundColor = '';
+                if (Math.abs(audioEl.playbackRate - option.rate) < 0.01) {
+                  this.style.backgroundColor = '#f0f0f0';
+                } else {
+                  this.style.backgroundColor = '';
+                }
               });
               
               dropdown.appendChild(item);
             });
             
-            // Position and add the dropdown
+            // Add to DOM
             const controls = customMoreOptionsIcon.closest('.audio-controls');
             if (controls) {
               controls.style.position = 'relative';
               controls.appendChild(dropdown);
               
-              // Close when clicking outside
+              // Handle clicking outside
               function closeDropdown(e) {
                 if (!dropdown.contains(e.target) && e.target !== customMoreOptionsIcon) {
                   dropdown.remove();
@@ -357,80 +457,26 @@ document.addEventListener('DOMContentLoaded', function() {
           });
         }
         
-        // Update timestamp and progress bar
-        if (customTimestamp || customProgressBar) {
-          audioPlayerEl.addEventListener('timeupdate', function() {
-            const currentTime = formatTime(audioPlayerEl.currentTime);
-            const duration = formatTime(audioPlayerEl.duration || 0);
-            
-            if (customTimestamp) {
-              customTimestamp.textContent = `${currentTime} / ${duration}`;
-            }
-            
-            if (customProgressBar) {
-              const percent = ((audioPlayerEl.currentTime / audioPlayerEl.duration) || 0) * 100;
-              customProgressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
-              
-              // Make progress bar interactive - allow seeking
-              if (!customProgressBar.getAttribute('listener-added')) {
-                customProgressBar.style.cursor = 'pointer';
-                customProgressBar.addEventListener('click', function(e) {
-                  const rect = customProgressBar.getBoundingClientRect();
-                  const clickPosition = (e.clientX - rect.left) / rect.width;
-                  audioPlayerEl.currentTime = clickPosition * audioPlayerEl.duration;
-                });
-                customProgressBar.setAttribute('listener-added', 'true');
-              }
-            }
-          });
-          
-          // Ensure duration is available as soon as possible
-          audioPlayerEl.addEventListener('loadedmetadata', function() {
-            if (customTimestamp) {
-              customTimestamp.textContent = `0:00 / ${formatTime(audioPlayerEl.duration)}`;
-            }
-          });
-        }
-        
-        // Hide the original audio card but keep its functionality
-        container.appendChild(audioCard);
-        audioCard.style.display = 'none';
-        audioPlayerEl.style.display = 'none';
-        
-        // Show the custom container
+        // Style container
         container.style.display = 'flex';
         container.style.alignItems = 'center';
         container.style.width = '100%';
+        container.style.position = 'relative';
         
-        // Style the timestamp
-        if (customTimestamp) {
-          customTimestamp.style.flex = '0 0 auto';
-          customTimestamp.style.margin = '0 10px';
-          customTimestamp.style.fontSize = '12px';
-          customTimestamp.style.color = '#666';
-        }
-        
-        // Style the progress bar
-        if (customProgressBar) {
-          customProgressBar.style.flex = '1';
-          customProgressBar.style.height = '4px';
-          customProgressBar.style.background = '#e0e0e0';
-          customProgressBar.style.borderRadius = '2px';
-          customProgressBar.style.margin = '0 10px';
+        // Hide original Ghost audio card
+        const originalCard = audioCards[index];
+        if (originalCard && originalCard.parentNode) {
+          originalCard.style.display = 'none';
         }
       });
     } catch (error) {
-      console.error('Error integrating audio UI:', error);
-      // Attempt to restore original state in case of error
-      try {
-        Array.from(audioCards).forEach(card => {
-          if (card.parentNode) {
-            card.style.display = '';
-          }
-        });
-      } catch (restoreError) {
-        console.error('Error restoring audio elements:', restoreError);
-      }
+      console.error('Error setting up custom audio players:', error);
+      // Fallback to original audio cards if there's an error
+      audioCards.forEach(card => {
+        if (card && card.parentNode) {
+          card.style.display = 'block';
+        }
+      });
     }
   }
   
