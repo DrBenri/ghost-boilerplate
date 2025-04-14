@@ -38,10 +38,17 @@
   padding: 20px;
 }
 
+/* Fixed column styles */
 .column {
   width: 240px;
   margin-right: 40px;
   flex-shrink: 0; /* Prevent column from shrinking */
+  transition: transform 0.2s ease-out;
+}
+
+.column-fixed {
+  transform: translateY(0);
+  will-change: transform;
 }
 
 .menu {

@@ -38,9 +38,9 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
   
-  // Calculate and cache menu fixed positioning values - now more accurate
-  function calculateMenuFixedStyles() {
-    if (!menu || !column) return;
+  // Calculate and cache column fixed positioning values
+  function calculateColumnFixedStyles() {
+    if (!column) return;
     
     // Get column position precisely
     const columnRect = column.getBoundingClientRect();
@@ -48,111 +48,107 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // More accurate position calculation
     menuFixedStyles = {
-      left: `${columnRect.left + scrollX}px`, // Add scroll offset for accurate absolute position
+      left: `${columnRect.left}px`, // Left position without scroll offset
       width: `${column.offsetWidth}px`,
       initialTop: `${column.offsetTop}px`
     };
   }
-  
-  // Handle fixed menu positioning on scroll with smoother transition
-  function handleMenuPosition() {
-    if (!menu || !column || menuInitialPosition === undefined) return;
+
+  function createColumnPlaceholder() {
+    // Create a placeholder element with the same dimensions as the column
+    const placeholder = document.createElement('div');
+    placeholder.className = 'column-placeholder';
+    placeholder.style.width = `${column.offsetWidth}px`;
+    placeholder.style.height = `${column.offsetHeight}px`;
+    placeholder.style.flex = '0 0 auto';
+    placeholder.style.display = 'none'; // Initially hidden
+    
+    // Insert the placeholder before the column
+    column.parentNode.insertBefore(placeholder, column);
+    
+    return placeholder;
+  }
+
+  function handleColumnPosition() {
+    if (!column || !menuInitialPosition) return;
 
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     
-    // Avoid unnecessary calculations by using requestAnimationFrame
-    if (!window.requestAnimationFrame) {
-      // Fallback for browsers that don't support requestAnimationFrame
-      simpleMenuPositioning(scrollTop);
-      return;
+    // Get or create the placeholder
+    let placeholder = document.querySelector('.column-placeholder');
+    if (!placeholder) {
+      placeholder = createColumnPlaceholder();
     }
     
-    // Use requestAnimationFrame for smoother updates
-    window.requestAnimationFrame(() => {
-      // Use a consistent threshold that won't change
-      const threshold = menuInitialPosition - 20;
-      
-      // Get current column position for accurate positioning
-      const columnRect = column.getBoundingClientRect();
-      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
-      
-      // Calculate exact position to prevent jumps
-      const leftPosition = `${columnRect.left}px`;
-      const columnWidth = `${column.offsetWidth}px`;
-      
-      if (scrollTop > threshold) {
-        if (!menu.classList.contains('menu-fixed')) {
-          // Save the current position before adding fixed positioning
-          menuFixedStyles.currentTop = menu.style.top || '';
-
-          // Apply all styles at once to avoid reflow/repaint
-          requestAnimationFrame(() => {
-            // Apply fixed styles atomically to prevent flicker
-            menu.classList.add('menu-transition');
-            menu.classList.add('menu-fixed');
-            
-            Object.assign(menu.style, {
-              position: 'fixed',
-              top: '0',
-              left: leftPosition,
-              width: columnWidth
-            });
-          });
-        } else {
-          // Just update position for smoother tracking
-          menu.style.left = leftPosition;
-          menu.style.width = columnWidth;
-        }
-      } else {
-        if (menu.classList.contains('menu-fixed')) {
-          // Remove fixed positioning in a single operation
-          requestAnimationFrame(() => {
-            // Reset to original styles
-            Object.assign(menu.style, {
-              position: '',
-              top: '',
-              left: '',
-              width: ''
-            });
-            
-            menu.classList.remove('menu-fixed');
-            
-            // Keep transition briefly for smooth return
-            setTimeout(() => {
-              menu.classList.remove('menu-transition');
-            }, 300);
-          });
-        }
-      }
-    });
-  }
-  
-  // Fallback simpler positioning for older browsers
-  function simpleMenuPositioning(scrollTop) {
-    const threshold = menuInitialPosition - 10;
-    
-    if (scrollTop > threshold) {
-      calculateMenuFixedStyles();
-      menu.classList.add('menu-fixed');
-      
-      Object.assign(menu.style, {
-        position: 'fixed',
-        top: '0',
-        left: menuFixedStyles.left,
-        width: menuFixedStyles.width,
-        zIndex: '1000'
-      });
-    } else {
-      menu.classList.remove('menu-fixed');
-      
-      Object.assign(menu.style, {
+    // Always reset to original position at the top of page
+    if (scrollTop === 0) {
+      column.style.transition = 'none';
+      column.classList.remove('column-fixed');
+      Object.assign(column.style, {
         position: '',
         top: '',
         left: '',
         width: '',
         zIndex: ''
       });
+      
+      // Hide the placeholder
+      placeholder.style.display = 'none';
+      
+      // Force a reflow
+      void column.offsetWidth;
+      
+      // Restore transitions
+      setTimeout(() => column.style.transition = '', 50);
+      return;
     }
+    
+    window.requestAnimationFrame(() => {
+      const threshold = menuInitialPosition - 20;
+      
+      if (scrollTop > threshold) {
+        if (!column.classList.contains('column-fixed')) {
+          // Calculate position before fixing
+          calculateColumnFixedStyles();
+          
+          // Update placeholder size to match current column dimensions
+          placeholder.style.width = `${column.offsetWidth}px`;
+          placeholder.style.height = `${column.offsetHeight}px`;
+          placeholder.style.marginRight = getComputedStyle(column).marginRight;
+          
+          // Show the placeholder to maintain layout
+          placeholder.style.display = 'block';
+          
+          // Apply fixed positioning to column
+          column.classList.add('column-fixed');
+          Object.assign(column.style, {
+            position: 'fixed',
+            top: '20px', // Add some padding from top of viewport
+            left: menuFixedStyles.left,
+            width: menuFixedStyles.width,
+            zIndex: '100'
+          });
+        } else {
+          // Just update positions if already fixed
+          column.style.left = menuFixedStyles.left;
+        }
+      } else {
+        if (column.classList.contains('column-fixed')) {
+          // Reset to original position
+          column.classList.remove('column-fixed');
+          Object.assign(column.style, {
+            position: '',
+            top: '',
+            left: '',
+            width: '',
+            zIndex: ''
+          });
+          
+          // Hide the placeholder
+          placeholder.style.display = 'none';
+        }
+      }
+    });
   }
   
   // Parse content into summary and explanation sections
@@ -566,8 +562,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Handle window resize events
   const handleResize = debounce(function() {
-    calculateMenuFixedStyles();
-    handleMenuPosition();
+    calculateColumnFixedStyles();
+    
+    // Update placeholder size if it exists
+    const placeholder = document.querySelector('.column-placeholder');
+    if (placeholder && placeholder.style.display !== 'none') {
+      placeholder.style.width = `${column.offsetWidth}px`;
+      placeholder.style.height = `${column.offsetHeight}px`;
+    }
+    
+    handleColumnPosition();
   }, 250);
   
   // Set up click handlers for navigation
@@ -591,42 +595,22 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Initialize everything
   function init() {
-    // Calculate initial menu styles before doing anything else
-    calculateMenuFixedStyles();
-    
-    // Apply fixed positioning immediately if page is already scrolled
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const threshold = menuInitialPosition - 20;
-    
-    // Pre-position the menu if page loads scrolled
-    if (scrollTop > threshold && menu && column) {
-      // Skip transition for initial positioning
-      Object.assign(menu.style, {
-        position: 'fixed',
-        top: '0',
-        left: menuFixedStyles.left,
-        width: menuFixedStyles.width,
-        zIndex: '1000'
-      });
-      menu.classList.add('menu-fixed');
-    }
+    // Calculate initial column styles
+    calculateColumnFixedStyles();
     
     // Parse content into sections
     parseContentSections();
     
     // Set up event listeners
-    window.addEventListener('scroll', throttle(handleMenuPosition, 100), { passive: true });
+    window.addEventListener('scroll', throttle(handleColumnPosition, 100), { passive: true });
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleResize, { passive: true });
-    
-    // Set up navigation
-    setupNavigation();
     
     // Move audio elements to frames
     moveAudioToFrames();
     
     // Initial calls to set correct state
-    handleMenuPosition();
+    handleColumnPosition();
     handleScroll();
     
     // Set default active item
