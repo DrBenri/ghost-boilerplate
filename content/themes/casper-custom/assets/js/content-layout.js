@@ -90,6 +90,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html;
       
+      // Hide all audio cards in the content before processing
+      tempDiv.querySelectorAll('.kg-card.kg-audio-card').forEach(card => {
+        card.style.display = 'none';
+      });
+      
       // Find all headings
       const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
       
@@ -151,6 +156,11 @@ document.addEventListener('DOMContentLoaded', function() {
       // Update the content areas
       content.innerHTML = summaryContent || html;
       explanation.innerHTML = explanationContent || '';
+      
+      // After setting content, ensure all audio cards in both sections are hidden
+      document.querySelectorAll('.summary-content .kg-card.kg-audio-card, .explanation-content .kg-card.kg-audio-card').forEach(card => {
+        card.style.display = 'none';
+      });
     } catch (error) {
       console.error('Error parsing content sections:', error);
     }
@@ -190,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 100);
   
-  // Function to move audio elements to corresponding audio-container elements
+  // Enhanced function to adapt expert profiles with audio cards
   function moveAudioToFrames() {
     if (!audioContainerElements.length || !audioCards.length) return;
     
@@ -207,32 +217,130 @@ document.addEventListener('DOMContentLoaded', function() {
       audioContainerElements.forEach((container, index) => {
         const audioCard = audioCards[index]; // Match audio card by index
         if (audioCard) {
-          container.innerHTML = ''; // Clear existing content
-          // Move the actual element instead of cloning to preserve event listeners
+          // Get the parent expert profile if available
+          const expertProfile = container.closest('.expert-profile');
+          
+          // Extract information from audio card for enhancing expert profile
+          if (expertProfile) {
+            const audioTitle = audioCard.querySelector('.kg-audio-title')?.textContent;
+            const audioPlayerEl = audioCard.querySelector('audio');
+            
+            // If we have an audio title and no expert name is set, use it
+            const expertNameEl = expertProfile.querySelector('.expert-name');
+            if (audioTitle && expertNameEl && expertNameEl.textContent.trim() === '') {
+              expertNameEl.textContent = audioTitle;
+            }
+            
+            // Setup event listeners for our custom play button if it exists
+            const customPlayBtn = expertProfile.querySelector('.play-button');
+            if (customPlayBtn && audioPlayerEl) {
+              customPlayBtn.addEventListener('click', function() {
+                if (audioPlayerEl.paused) {
+                  audioPlayerEl.play();
+                } else {
+                  audioPlayerEl.pause();
+                }
+              });
+              
+              // Update play button state when audio state changes
+              audioPlayerEl.addEventListener('play', function() {
+                customPlayBtn.src = customPlayBtn.src.replace('play.svg', 'pause.svg');
+              });
+              
+              audioPlayerEl.addEventListener('pause', function() {
+                customPlayBtn.src = customPlayBtn.src.replace('pause.svg', 'play.svg');
+              });
+              
+              // Update timestamp display if available
+              if (expertProfile.querySelector('.audio-timestamp')) {
+                audioPlayerEl.addEventListener('timeupdate', function() {
+                  const currentTime = formatTime(audioPlayerEl.currentTime);
+                  const duration = formatTime(audioPlayerEl.duration);
+                  expertProfile.querySelector('.audio-timestamp').textContent = 
+                    `${currentTime} / ${duration}`;
+                  
+                  // Update progress bar if it exists
+                  const progressBar = expertProfile.querySelector('.progress-bar');
+                  if (progressBar) {
+                    const percent = (audioPlayerEl.currentTime / audioPlayerEl.duration) * 100;
+                    progressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
+                  }
+                });
+              }
+            }
+          }
+          
+          // Clear container and move the audio card
+          container.innerHTML = '';
           container.appendChild(audioCard);
-          container.style.display = 'block'; // Ensure the container is visible
+          container.style.display = 'block';
+          
+          // Apply custom styling to make audio card fit our design
+          const audioPlayer = audioCard.querySelector('.kg-audio-player');
+          if (audioPlayer) {
+            // Hide the default Ghost audio card avatar/thumbnail
+            const thumbnail = audioCard.querySelector('.kg-audio-thumbnail');
+            if (thumbnail) {
+              thumbnail.style.display = 'none';
+            }
+            
+            // Style the audio player to match our UI
+            audioPlayer.style.backgroundColor = 'transparent';
+            audioPlayer.style.padding = '0';
+            audioPlayer.style.border = 'none';
+            audioPlayer.style.boxShadow = 'none';
+            
+            // Hide title if we're displaying it in our expert profile
+            const title = audioCard.querySelector('.kg-audio-title');
+            if (title) {
+              title.style.display = 'none';
+            }
+            
+            // Style the play button and duration elements
+            const playButton = audioCard.querySelector('.kg-audio-play-icon');
+            if (playButton) {
+              // If we have a custom play button, hide the Ghost one
+              if (expertProfile && expertProfile.querySelector('.play-button')) {
+                playButton.parentElement.style.display = 'none';
+              } else {
+                playButton.parentElement.style.width = '36px';
+                playButton.parentElement.style.height = '36px';
+                playButton.parentElement.style.backgroundColor = '#f0f0f0';
+              }
+            }
+            
+            // Hide default duration element if we're using our custom one
+            const duration = audioCard.querySelector('.kg-audio-duration');
+            if (duration && expertProfile && expertProfile.querySelector('.audio-timestamp')) {
+              duration.style.display = 'none';
+            }
+            
+            // Style the progress bar
+            const progressContainer = audioCard.querySelector('.kg-audio-seek-slider');
+            if (progressContainer && expertProfile && expertProfile.querySelector('.progress-bar')) {
+              progressContainer.style.display = 'none';
+            }
+          }
           
           // Ensure player controls are properly initialized
-          const audioPlayer = container.querySelector('audio');
-          if (audioPlayer) {
-            // Force audio player to refresh
-            const currentTime = audioPlayer.currentTime;
-            audioPlayer.load();
-            audioPlayer.currentTime = currentTime;
+          const audioPlayerEl = container.querySelector('audio');
+          if (audioPlayerEl) {
+            const currentTime = audioPlayerEl.currentTime;
+            audioPlayerEl.load();
+            audioPlayerEl.currentTime = currentTime;
             
-            // Make sure play buttons work by ensuring click events propagate
-            const playButtons = container.querySelectorAll('.kg-audio-play-icon, .kg-audio-pause-icon');
-            playButtons.forEach(button => {
-              // Ensure pointer events are enabled
-              button.style.pointerEvents = 'auto';
-            });
+            // Hide audio element controls if we're using our custom UI
+            if (expertProfile) {
+              audioPlayerEl.controls = false;
+              audioPlayerEl.style.display = 'none';
+            }
           }
         } else {
-          container.style.display = 'none'; // Hide if no audio card is available
+          container.style.display = 'none';
         }
       });
     } catch (error) {
-      console.error('Error moving audio elements:', error);
+      console.error('Error adapting expert profiles with audio:', error);
       // Attempt to restore original state in case of error
       try {
         Array.from(audioCards).forEach(card => {
@@ -244,6 +352,14 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error('Error restoring audio elements:', restoreError);
       }
     }
+  }
+  
+  // Helper function to format time in MM:SS format
+  function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = Math.floor(seconds % 60);
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   }
   
   // Handle window resize events
