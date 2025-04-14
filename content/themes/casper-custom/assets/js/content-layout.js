@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const explanationLink = document.getElementById('explanation-link');
   const summarySection = document.getElementById('summary-section');
   const explanationSection = document.getElementById('explanation-section');
-  const frame20Elements = document.querySelectorAll('.frame-20');
+  const audioContainerElements = document.querySelectorAll('.audio-container');
   const audioCards = document.querySelectorAll('.kg-card.kg-audio-card');
   
   // Initial menu position - only calculate once
@@ -190,9 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }, 100);
   
-  // Function to move audio elements to corresponding frame-20 elements
+  // Function to move audio elements to corresponding audio-container elements
   function moveAudioToFrames() {
-    if (!frame20Elements.length || !audioCards.length) return;
+    if (!audioContainerElements.length || !audioCards.length) return;
     
     try {
       // Store original locations to potentially restore them later if needed
@@ -204,16 +204,16 @@ document.addEventListener('DOMContentLoaded', function() {
         };
       });
       
-      frame20Elements.forEach((frame, index) => {
+      audioContainerElements.forEach((container, index) => {
         const audioCard = audioCards[index]; // Match audio card by index
         if (audioCard) {
-          frame.innerHTML = ''; // Clear existing content in the frame
+          container.innerHTML = ''; // Clear existing content
           // Move the actual element instead of cloning to preserve event listeners
-          frame.appendChild(audioCard);
-          frame.style.display = 'block'; // Ensure the frame is visible
+          container.appendChild(audioCard);
+          container.style.display = 'block'; // Ensure the container is visible
           
           // Ensure player controls are properly initialized
-          const audioPlayer = frame.querySelector('audio');
+          const audioPlayer = container.querySelector('audio');
           if (audioPlayer) {
             // Force audio player to refresh
             const currentTime = audioPlayer.currentTime;
@@ -221,14 +221,14 @@ document.addEventListener('DOMContentLoaded', function() {
             audioPlayer.currentTime = currentTime;
             
             // Make sure play buttons work by ensuring click events propagate
-            const playButtons = frame.querySelectorAll('.kg-audio-play-icon, .kg-audio-pause-icon');
+            const playButtons = container.querySelectorAll('.kg-audio-play-icon, .kg-audio-pause-icon');
             playButtons.forEach(button => {
               // Ensure pointer events are enabled
               button.style.pointerEvents = 'auto';
             });
           }
         } else {
-          frame.style.display = 'none'; // Hide the frame if no audio card is available
+          container.style.display = 'none'; // Hide if no audio card is available
         }
       });
     } catch (error) {
