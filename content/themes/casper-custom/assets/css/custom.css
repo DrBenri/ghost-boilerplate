@@ -285,7 +285,9 @@ body,
   font-size: var(--font-size-display);
   line-height: 1.6em;
   font-weight: var(--font-weight-regular);
-  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 2px;
+  text-decoration: dotted underline;
 }
 
 .banner-decoration {
@@ -981,7 +983,7 @@ body,
     color: #203AA6;
     text-align: left;
     line-height: 1.2;
-    width: 100%;
+    width: fit-content;
   }
 }
 
