@@ -302,7 +302,7 @@
   left: 0;
   top: 0;
   height: 100%;
-  width: 30%; /* Example progress */
+  width: 0%;
   background-color: #1d72c2;
   border-radius: 2px;
 }

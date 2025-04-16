@@ -438,6 +438,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const audioEl = document.createElement('audio');
         audioEl.style.display = 'none';
         audioEl.preload = 'metadata';
+        audioEl.crossOrigin = "anonymous"; // Add crossOrigin for better compatibility
         
         // Add sources
         audioSource.sources.forEach(source => {
@@ -452,7 +453,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Initialize UI
         if (customTimestamp) {
-          customTimestamp.textContent = '読み込み中...'; // "Loading..." in Japanese
+          customTimestamp.textContent = 'Loading...';
           customTimestamp.style.color = '#999';
         }
         
@@ -474,8 +475,23 @@ document.addEventListener('DOMContentLoaded', function() {
           // Play/pause toggle
           customPlayBtn.addEventListener('click', function() {
             if (audioEl.paused) {
-              audioEl.play().catch(error => {
+              // Show loading state
+              if (customProgressBar) {
+                customProgressBar.classList.add('loading');
+              }
+              
+              audioEl.play().then(() => {
+                // Success - UI updated via 'play' event handler
+              }).catch(error => {
                 console.error('Error playing audio:', error);
+                
+                // Remove loading state on error
+                if (customProgressBar) {
+                  customProgressBar.classList.remove('loading');
+                }
+                
+                // Show a small alert for better user feedback
+                alert('Unable to play audio. Please check your connection or try again later.');
               });
             } else {
               audioEl.pause();
@@ -513,6 +529,36 @@ document.addEventListener('DOMContentLoaded', function() {
             const percent = ((audioEl.currentTime / audioEl.duration) || 0) * 100;
             customProgressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
             customProgressBar.classList.remove('loading');
+            
+            // Update progress-bar::after pseudo-element position
+            // First ensure we have the custom property in the element's style
+            customProgressBar.style.setProperty('--progress-width', `${percent}%`);
+            
+            // Add a class to indicate playing state for CSS animations
+            if (!audioEl.paused) {
+              customProgressBar.classList.add('playing');
+            } else {
+              customProgressBar.classList.remove('playing');
+            }
+          }
+        });
+        
+        // Update playing state on play/pause
+        audioEl.addEventListener('play', function() {
+          if (customProgressBar) {
+            customProgressBar.classList.add('playing');
+          }
+        });
+        
+        audioEl.addEventListener('pause', function() {
+          if (customProgressBar) {
+            customProgressBar.classList.remove('playing');
+          }
+        });
+        
+        audioEl.addEventListener('ended', function() {
+          if (customProgressBar) {
+            customProgressBar.classList.remove('playing');
           }
         });
         
@@ -549,15 +595,47 @@ document.addEventListener('DOMContentLoaded', function() {
         // Volume control
         if (customVolumeIcon) {
           let isMuted = false;
+          
+          // Store original volume before muting
+          let previousVolume = 1.0;
+          
+          // Get the icon paths from the current source
+          const imgPath = customVolumeIcon.src.substring(0, customVolumeIcon.src.lastIndexOf('/') + 1);
+          const volumeHighImageSrc = imgPath + 'volume-high.svg';
+          const volumeMuteImageSrc = imgPath + 'volume-mute.svg';
+          
+          // Preload both volume icons to avoid missing image issues
+          const volumeMuteImage = new Image();
+          volumeMuteImage.src = volumeMuteImageSrc;
+          
           customVolumeIcon.addEventListener('click', function() {
             if (isMuted) {
-              audioEl.volume = 1.0;
-              customVolumeIcon.src = customVolumeIcon.src.replace('volume-mute.svg', 'volume-high.svg');
+              // Restore previous volume or default to full volume
+              audioEl.volume = previousVolume > 0 ? previousVolume : 1.0;
+              customVolumeIcon.src = volumeHighImageSrc;
+              customVolumeIcon.setAttribute('alt', 'Mute');
+              customVolumeIcon.setAttribute('title', 'Mute');
               isMuted = false;
             } else {
+              // Store current volume before muting
+              previousVolume = audioEl.volume;
+              
+              // Mute the audio
               audioEl.volume = 0;
-              customVolumeIcon.src = customVolumeIcon.src.replace('volume-high.svg', 'volume-mute.svg');
+              customVolumeIcon.src = volumeMuteImageSrc;
+              customVolumeIcon.setAttribute('alt', 'Unmute');
+              customVolumeIcon.setAttribute('title', 'Unmute');
               isMuted = true;
+            }
+          });
+          
+          // Sync initial state with audio element
+          audioEl.addEventListener('loadedmetadata', function() {
+            if (audioEl.muted || audioEl.volume === 0) {
+              isMuted = true;
+              customVolumeIcon.src = volumeMuteImageSrc;
+              customVolumeIcon.setAttribute('alt', 'Unmute');
+              customVolumeIcon.setAttribute('title', 'Unmute');
             }
           });
         }
