@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const explanationSection = document.getElementById('explanation-section');
   const audioContainerElements = document.querySelectorAll('.audio-container');
   const audioCards = document.querySelectorAll('.kg-card.kg-audio-card');
+  const summarySidebar = document.querySelector('.summary-sidebar');
+  const explanationSidebar = document.querySelector('.explanation-sidebar');
   
   // Initial menu position - only calculate once
   let menuFixedStyles = {};
@@ -39,6 +41,91 @@ document.addEventListener('DOMContentLoaded', function() {
     };
   }
   
+  // Handle responsive layout for audio sidebars
+  function handleResponsiveAudioLayout() {
+    const isMobile = window.innerWidth <= 992;
+    
+    // Handle summary sidebar (audio 1)
+    if (summarySidebar && content) {
+      if (isMobile) {
+        // Move summary sidebar to top of summary content
+        if (content.firstChild) {
+          content.insertBefore(summarySidebar, content.firstChild);
+        } else {
+          content.appendChild(summarySidebar);
+        }
+        
+        // Apply mobile styling
+        summarySidebar.style.width = '100%';
+        summarySidebar.style.marginBottom = '20px';
+        summarySidebar.style.paddingLeft = '0';
+      } else {
+        // Return to original position in desktop view
+        const firstContentRow = document.querySelector('.content-row:first-of-type');
+        if (firstContentRow && summarySidebar.parentNode !== firstContentRow) {
+          firstContentRow.appendChild(summarySidebar);
+          
+          // Reset styles
+          summarySidebar.style.width = '';
+          summarySidebar.style.marginBottom = '';
+          summarySidebar.style.paddingLeft = '';
+        }
+      }
+    }
+    
+    // Handle explanation sidebar (audio 2)
+    if (explanationSidebar && explanation) {
+      if (isMobile) {
+        // Move explanation sidebar to top of explanation content
+        if (explanation.firstChild) {
+          explanation.insertBefore(explanationSidebar, explanation.firstChild);
+        } else {
+          explanation.appendChild(explanationSidebar);
+        }
+        
+        // Apply mobile styling
+        explanationSidebar.style.width = '100%';
+        explanationSidebar.style.marginBottom = '20px';
+        explanationSidebar.style.paddingLeft = '0';
+      } else {
+        // Return to original position in desktop view
+        const secondContentRow = document.querySelector('.content-row:nth-of-type(2)');
+        if (secondContentRow && explanationSidebar.parentNode !== secondContentRow) {
+          secondContentRow.appendChild(explanationSidebar);
+          
+          // Reset styles
+          explanationSidebar.style.width = '';
+          explanationSidebar.style.marginBottom = '';
+          explanationSidebar.style.paddingLeft = '';
+        }
+      }
+    }
+    
+    // Adjust expert profiles for better mobile display
+    const expertProfiles = document.querySelectorAll('.expert-profile');
+    expertProfiles.forEach(profile => {
+      if (isMobile) {
+        profile.style.display = 'flex';
+        profile.style.flexDirection = 'column';
+        
+        const avatar = profile.querySelector('.expert-avatar');
+        if (avatar) {
+          avatar.style.marginBottom = '16px';
+          avatar.style.width = '100%';
+        }
+      } else {
+        profile.style.display = '';
+        profile.style.flexDirection = '';
+        
+        const avatar = profile.querySelector('.expert-avatar');
+        if (avatar) {
+          avatar.style.marginBottom = '';
+          avatar.style.width = '';
+        }
+      }
+    });
+  }
+
   // Calculate and cache column fixed positioning values
   function calculateColumnFixedStyles() {
     if (!column) return;
@@ -759,6 +846,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial calls to set correct state
     handleColumnPosition();
     handleScroll();
+    
+    // Handle responsive layout for audio sidebars
+    handleResponsiveAudioLayout();
+    window.addEventListener('resize', debounce(handleResponsiveAudioLayout, 250), { passive: true });
     
     // Set default active item
     if (summaryLink) {
