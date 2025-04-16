@@ -438,7 +438,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const audioEl = document.createElement('audio');
         audioEl.style.display = 'none';
         audioEl.preload = 'metadata';
-        audioEl.crossOrigin = "anonymous"; // Add crossOrigin for better compatibility
+        audioEl.crossOrigin = "anonymous";
+        
+        // Track loading attempts and state
+        let loadAttempts = 0;
+        let isLoading = false;
+        const maxLoadAttempts = 3;
         
         // Add sources
         audioSource.sources.forEach(source => {
@@ -467,32 +472,120 @@ document.addEventListener('DOMContentLoaded', function() {
           const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
           const playImageSrc = imgPath + 'play.svg';
           const pauseImageSrc = imgPath + 'pause.svg';
+          const loadingImageSrc = imgPath + 'loading.svg';
           
-          // Preload pause image
+          // Preload images
           const pauseImage = new Image();
           pauseImage.src = pauseImageSrc;
           
-          // Play/pause toggle
-          customPlayBtn.addEventListener('click', function() {
-            if (audioEl.paused) {
-              // Show loading state
+          const loadingImage = new Image();
+          loadingImage.src = loadingImageSrc;
+          
+          // Function to handle loading state
+          const setLoadingState = (isLoading) => {
+            if (isLoading) {
+              customPlayBtn.src = loadingImageSrc;
+              customPlayBtn.setAttribute('alt', 'Loading');
               if (customProgressBar) {
                 customProgressBar.classList.add('loading');
               }
+            } else {
+              customPlayBtn.src = playImageSrc;
+              customPlayBtn.setAttribute('alt', 'Play');
+              if (customProgressBar) {
+                customProgressBar.classList.remove('loading');
+              }
+            }
+          };
+          
+          // Enhanced play function with retry logic
+          const attemptPlay = () => {
+            if (isLoading) return;
+            
+            isLoading = true;
+            setLoadingState(true);
+            
+            // Make sure audio is loaded before playing
+            if (audioEl.readyState < 2) { // HAVE_CURRENT_DATA or higher needed for playback
+              // If not loaded enough, force load
+              audioEl.load();
               
+              // Set a timeout in case loading hangs
+              const loadTimeout = setTimeout(() => {
+                if (isLoading && loadAttempts < maxLoadAttempts) {
+                  console.warn('Audio loading timeout, retrying...');
+                  loadAttempts++;
+                  audioEl.load(); // Try loading again
+                } else if (isLoading) {
+                  // Max attempts reached, show error
+                  isLoading = false;
+                  setLoadingState(false);
+                  
+                  // Show feedback to user
+                  if (customTimestamp) {
+                    customTimestamp.textContent = 'Failed to load audio';
+                    customTimestamp.style.color = '#e74c3c';
+                  }
+                  
+                  // Optional: alert only on the last attempt
+                  if (loadAttempts >= maxLoadAttempts) {
+                    console.error('Could not load audio after multiple attempts');
+                  }
+                }
+              }, 10000); // 10 second timeout
+              
+              // Listen for canplay event
+              const canPlayHandler = () => {
+                clearTimeout(loadTimeout);
+                audioEl.removeEventListener('canplay', canPlayHandler);
+                
+                // Now we can play
+                audioEl.play().then(() => {
+                  isLoading = false;
+                  // Play state will be handled by the play event
+                }).catch(error => {
+                  console.error('Error playing audio:', error);
+                  isLoading = false;
+                  setLoadingState(false);
+                  
+                  // Check if autoplay was blocked
+                  if (error.name === 'NotAllowedError') {
+                    if (customTimestamp) {
+                      customTimestamp.textContent = 'Click play to start audio';
+                      customTimestamp.style.color = '#666';
+                    }
+                  } else {
+                    if (customTimestamp) {
+                      customTimestamp.textContent = 'Could not play audio';
+                      customTimestamp.style.color = '#e74c3c';
+                    }
+                  }
+                });
+              };
+              
+              audioEl.addEventListener('canplay', canPlayHandler);
+            } else {
+              // Audio is already loaded enough to play
               audioEl.play().then(() => {
-                // Success - UI updated via 'play' event handler
+                isLoading = false;
+                // Play state will be handled by the play event
               }).catch(error => {
                 console.error('Error playing audio:', error);
+                isLoading = false;
+                setLoadingState(false);
                 
-                // Remove loading state on error
-                if (customProgressBar) {
-                  customProgressBar.classList.remove('loading');
+                if (customTimestamp) {
+                  customTimestamp.textContent = 'Could not play audio';
+                  customTimestamp.style.color = '#e74c3c';
                 }
-                
-                // Show a small alert for better user feedback
-                alert('Unable to play audio. Please check your connection or try again later.');
               });
+            }
+          };
+          
+          // Play/pause toggle with enhanced error handling
+          customPlayBtn.addEventListener('click', function() {
+            if (audioEl.paused) {
+              attemptPlay();
             } else {
               audioEl.pause();
             }
@@ -502,6 +595,10 @@ document.addEventListener('DOMContentLoaded', function() {
           audioEl.addEventListener('play', function() {
             customPlayBtn.src = pauseImageSrc;
             customPlayBtn.setAttribute('alt', 'Pause');
+            isLoading = false;
+            if (customProgressBar) {
+              customProgressBar.classList.remove('loading');
+            }
           });
           
           audioEl.addEventListener('pause', function() {
@@ -512,6 +609,36 @@ document.addEventListener('DOMContentLoaded', function() {
           audioEl.addEventListener('ended', function() {
             customPlayBtn.src = playImageSrc;
             customPlayBtn.setAttribute('alt', 'Play');
+          });
+          
+          // Handle loading errors
+          audioEl.addEventListener('error', function(e) {
+            console.error('Audio error:', e);
+            isLoading = false;
+            setLoadingState(false);
+            
+            if (customTimestamp) {
+              customTimestamp.textContent = 'Audio failed to load';
+              customTimestamp.style.color = '#e74c3c';
+            }
+            
+            // If we have multiple sources, try the next one
+            const sources = audioEl.querySelectorAll('source');
+            let currentSource = null;
+            
+            // Find the source that failed
+            for (let i = 0; i < sources.length; i++) {
+              if (i + 1 < sources.length && sources[i].error) {
+                currentSource = sources[i];
+                break;
+              }
+            }
+            
+            if (currentSource && loadAttempts < maxLoadAttempts) {
+              loadAttempts++;
+              console.log(`Trying next audio source. Attempt ${loadAttempts} of ${maxLoadAttempts}`);
+              audioEl.load(); // Try loading again
+            }
           });
         }
         
@@ -565,12 +692,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle loading states
         audioEl.addEventListener('loadedmetadata', function() {
           if (customTimestamp) {
-            customTimestamp.textContent = `0:00 / ${formatTime(audioEl.duration)}`;
+            customTimestamp.textContent = `0:00 / ${formatTime(audioEl.duration || 0)}`;
             customTimestamp.style.color = '#666';
           }
           
           if (customProgressBar) {
             customProgressBar.classList.remove('loading');
+          }
+          
+          // Preload more of the audio for smoother playback
+          if (audioEl.preload !== 'auto') {
+            audioEl.preload = 'auto';
           }
         });
         
@@ -578,19 +710,58 @@ document.addEventListener('DOMContentLoaded', function() {
           if (customProgressBar) {
             customProgressBar.classList.add('loading');
           }
+          
+          if (customPlayBtn && customPlayBtn.getAttribute('alt') === 'Pause') {
+            const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
+            const loadingImageSrc = imgPath + 'loading.svg';
+            customPlayBtn.src = loadingImageSrc;
+            customPlayBtn.setAttribute('alt', 'Loading');
+          }
         });
         
+        audioEl.addEventListener('playing', function() {
+          if (customProgressBar) {
+            customProgressBar.classList.remove('loading');
+          }
+          
+          if (customPlayBtn && customPlayBtn.getAttribute('alt') === 'Loading') {
+            const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
+            const pauseImageSrc = imgPath + 'pause.svg';
+            customPlayBtn.src = pauseImageSrc;
+            customPlayBtn.setAttribute('alt', 'Pause');
+          }
+        });
+        
+        // Initiate preloading of audio in the background for better user experience
+        setTimeout(() => {
+          // Low-priority task to preload audio data
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(() => {
+              if (audioEl.preload !== 'auto') {
+                audioEl.preload = 'auto';
+                audioEl.load();
+              }
+            });
+          } else {
+            // Fallback for browsers without requestIdleCallback
+            setTimeout(() => {
+              if (audioEl.preload !== 'auto') {
+                audioEl.preload = 'auto';
+                audioEl.load();
+              }
+            }, 1000);
+          }
+        }, 500);
+
         // Interactive progress bar
-        if (customProgressBar) {
-          customProgressBar.style.cursor = 'pointer';
-          customProgressBar.addEventListener('click', function(e) {
-            if (audioEl.duration) {
-              const rect = customProgressBar.getBoundingClientRect();
-              const clickPosition = (e.clientX - rect.left) / rect.width;
-              audioEl.currentTime = clickPosition * audioEl.duration;
-            }
-          });
-        }
+        customProgressBar.style.cursor = 'pointer';
+        customProgressBar.addEventListener('click', function(e) {
+          if (audioEl.duration) {
+            const rect = customProgressBar.getBoundingClientRect();
+            const clickPosition = (e.clientX - rect.left) / rect.width;
+            audioEl.currentTime = clickPosition * audioEl.duration;
+          }
+        });
         
         // Volume control
         if (customVolumeIcon) {
