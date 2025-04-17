@@ -1087,6 +1087,11 @@ body,
     align-items: center;
   }
   
+  .footer-column,
+  .footer-column-links {
+    align-items: flex-start;
+  }
+
   .social-title, 
   .footer-section-title, 
   .link-text, 

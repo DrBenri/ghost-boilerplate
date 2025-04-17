@@ -12,6 +12,9 @@
   flex-shrink: 0;
   position: relative;
 }
+.post-feed {
+  padding: 16px;
+}
 .title {
   border-style: solid;
   border-color: var(--neutral-02, #cacaca);

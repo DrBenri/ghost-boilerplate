@@ -148,4 +148,9 @@
     left: auto;
     right: -60px;
   }
+  
+  /* Hide current page title in mobile view */
+  .destiny-breast-062, .current-page {
+    display: none;
+  }
 }
