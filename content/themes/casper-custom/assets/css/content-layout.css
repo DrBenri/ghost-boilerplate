@@ -201,27 +201,6 @@
   position: relative;
 }
 
-/* Audio container styling */
-#main-audio-container {
-  margin-top: 20px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-/* Style for kg-audio-card when moved to audio container */
-#main-audio-container .kg-audio-card {
-  width: 100%;
-  margin: 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.audio-title {
-  padding: 12px 15px 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: #15171a;
-}
-
 /* Expert profile containers */
 .expert-profile {
   display: flex;
@@ -263,61 +242,6 @@
   font-size: 14px;
   color: #666;
   line-height: 1.4;
-}
-
-/* Audio container */
-.audio-container {
-  display: flex;
-  align-items: center;
-  background-color: #fff;
-  border-radius: 6px;
-  padding: 8px 12px;
-  border: 1px solid #e0e0e0;
-}
-
-.play-button {
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  margin-right: 8px;
-}
-
-.audio-timestamp {
-  font-size: 12px;
-  color: #666;
-  margin-right: 8px;
-}
-
-.progress-bar {
-  flex: 1;
-  height: 4px;
-  background-color: #e0e0e0;
-  border-radius: 2px;
-  position: relative;
-}
-
-.progress-bar::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 0%;
-  background-color: #1d72c2;
-  border-radius: 2px;
-}
-
-.audio-controls {
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
-}
-
-.volume-icon, .more-options {
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  margin-left: 8px;
 }
 
 /* Responsive adjustments */
@@ -418,21 +342,6 @@
     margin-right: 15px;
     margin-bottom: 0;
   }
-  
-  /* Adjust audio container to take up 50% of space */
-  .expert-profile .audio-container {
-    width: 50%;
-    flex-grow: 1;
-  }
-  
-  /* Ensure proper spacing in audio container */
-  .audio-container .progress-bar {
-    min-width: 60px; /* Ensure progress bar has minimum width */
-  }
-  
-  .audio-container .audio-timestamp {
-    min-width: 75px; /* Ensure timestamp has enough space */
-  }
 }
 
 /* Responsive styles for audio sidebars inside content */
@@ -484,12 +393,6 @@
     font-size: 12px;
     line-height: 1.4;
   }
-  
-  .audio-container {
-    padding: 8px;
-    border-radius: 8px;
-    background: #f8f8f8;
-  }
 }
 
 @media (max-width: 576px) {
@@ -507,25 +410,6 @@
   .expert-title {
     font-size: 11px;
     line-height: 1.3;
-  }
-  
-  /* Improve audio player UI on small screens */
-  .audio-container {
-    padding: 6px;
-  }
-  
-  .audio-timestamp {
-    font-size: 11px;
-  }
-  
-  .play-button {
-    width: 28px;
-    height: 28px;
-  }
-  
-  .audio-controls img {
-    width: 18px;
-    height: 18px;
   }
 }
 

@@ -8,10 +8,11 @@ document.addEventListener('DOMContentLoaded', function() {
   const explanationLink = document.getElementById('explanation-link');
   const summarySection = document.getElementById('summary-section');
   const explanationSection = document.getElementById('explanation-section');
-  const audioContainerElements = document.querySelectorAll('.audio-container');
-  const audioCards = document.querySelectorAll('.kg-card.kg-audio-card');
   const summarySidebar = document.querySelector('.summary-sidebar');
   const explanationSidebar = document.querySelector('.explanation-sidebar');
+
+  // Audio elements
+  const audioElements = document.querySelectorAll('audio');
   
   // Initial menu position - only calculate once
   let menuFixedStyles = {};
@@ -385,528 +386,92 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Enhanced function to fully integrate audio cards with custom UI
   function moveAudioToFrames() {
-    if (!audioContainerElements.length || !audioCards.length) return;
-    
+    // First check if we have any audio elements to work with
+    if (!audioElements.length) return;
+
     try {
-      // Extract audio sources from all Ghost audio cards
-      const audioSources = Array.from(audioCards).map(card => {
-        const audioEl = card.querySelector('audio');
-        let sources = [];
-        
-        if (audioEl) {
-          if (audioEl.src) {
-            // Direct src attribute
-            sources.push({
-              url: audioEl.src,
-              type: audioEl.getAttribute('type') || 'audio/mpeg'
-            });
-          } else {
-            // Source elements
-            const sourceElements = audioEl.querySelectorAll('source');
-            sources = Array.from(sourceElements).map(source => ({
-              url: source.src,
-              type: source.type || 'audio/mpeg'
-            }));
-          }
-          
-          // Get title if available
-          const titleEl = card.querySelector('.kg-audio-title');
-          const title = titleEl ? titleEl.textContent.trim() : '';
-          
-          return { sources, title };
-        }
-        
-        return { sources: [], title: '' };
-      });
+      // Get containers if available
+      const summaryContainer = document.querySelector('.summary-sidebar .audio-container');
+      const explanationContainer = document.querySelector('.explanation-sidebar .audio-container');
       
-      // Create custom audio players with raw HTML5 audio elements
-      audioContainerElements.forEach((container, index) => {
-        // Skip if no audio source is available for this container
-        if (!audioSources[index] || !audioSources[index].sources.length) {
-          container.style.display = 'none';
+      // If no specific containers found, use generic approach
+      if (!summaryContainer && !explanationContainer) {
+        console.log('No specific audio containers found, using generic approach');
+        const audioContainerElements = document.querySelectorAll('.audio-container');
+        
+        if (!audioContainerElements.length) {
+          // Process each audio element directly if no containers
+          audioElements.forEach((audioEl) => {
+            audioEl.style.display = 'block';
+            audioEl.style.width = '100%';
+            audioEl.controls = true;
+          });
           return;
         }
         
-        const audioSource = audioSources[index];
-        const customPlayBtn = container.querySelector('.play-button');
-        const customTimestamp = container.querySelector('.audio-timestamp');
-        const customProgressBar = container.querySelector('.progress-bar');
-        const customVolumeIcon = container.querySelector('.volume-icon');
-        const customMoreOptionsIcon = container.querySelector('.more-options');
-        
-        // Create new audio element
-        const audioEl = document.createElement('audio');
-        audioEl.style.display = 'none';
-        audioEl.preload = 'metadata';
-        audioEl.crossOrigin = "anonymous";
-        
-        // Track loading attempts and state
-        let loadAttempts = 0;
-        let isLoading = false;
-        const maxLoadAttempts = 3;
-        
-        // Add sources
-        audioSource.sources.forEach(source => {
-          const sourceEl = document.createElement('source');
-          sourceEl.src = source.url;
-          sourceEl.type = source.type;
-          audioEl.appendChild(sourceEl);
+        // Simply move the audio elements to the containers (generic approach)
+        audioElements.forEach((audioEl, index) => {
+          if (index >= audioContainerElements.length) return;
+          const container = audioContainerElements[index];
+          if (audioEl.parentNode) {
+            audioEl.parentNode.removeChild(audioEl);
+          }
+          audioEl.controls = true;
+          audioEl.style.width = '100%';
+          audioEl.style.display = 'block';
+          container.appendChild(audioEl);
+          container.style.display = 'flex';
+          container.style.width = '100%';
         });
         
-        // Add the audio element to the container
-        container.appendChild(audioEl);
-        
-        // Initialize UI
-        if (customTimestamp) {
-          customTimestamp.textContent = 'Loading...';
-          customTimestamp.style.color = '#999';
+        return;
+      }
+      
+      // Handle the case with two audio elements (common case)
+      if (audioElements.length >= 1 && summaryContainer) {
+        // Set up first audio element for summary section
+        const summaryAudio = audioElements[0];
+        if (summaryAudio.parentNode) {
+          summaryAudio.parentNode.removeChild(summaryAudio);
         }
-        
-        if (customProgressBar) {
-          customProgressBar.classList.add('loading');
+        summaryAudio.controls = true;
+        summaryAudio.style.width = '100%';
+        summaryAudio.style.display = 'block';
+        summaryContainer.appendChild(summaryAudio);
+        summaryContainer.style.display = 'flex';
+        summaryContainer.style.width = '100%';
+      }
+      
+      if (audioElements.length >= 2 && explanationContainer) {
+        // Set up second audio element for explanation section
+        const explanationAudio = audioElements[1];
+        if (explanationAudio.parentNode) {
+          explanationAudio.parentNode.removeChild(explanationAudio);
         }
-        
-        // Set up play button
-        if (customPlayBtn) {
-          // Image paths
-          const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
-          const playImageSrc = imgPath + 'play.svg';
-          const pauseImageSrc = imgPath + 'pause.svg';
-          const loadingImageSrc = imgPath + 'loading.svg';
-          
-          // Preload images
-          const pauseImage = new Image();
-          pauseImage.src = pauseImageSrc;
-          
-          const loadingImage = new Image();
-          loadingImage.src = loadingImageSrc;
-          
-          // Function to handle loading state
-          const setLoadingState = (isLoading) => {
-            if (isLoading) {
-              customPlayBtn.src = loadingImageSrc;
-              customPlayBtn.setAttribute('alt', 'Loading');
-              if (customProgressBar) {
-                customProgressBar.classList.add('loading');
-              }
-            } else {
-              customPlayBtn.src = playImageSrc;
-              customPlayBtn.setAttribute('alt', 'Play');
-              if (customProgressBar) {
-                customProgressBar.classList.remove('loading');
-              }
-            }
-          };
-          
-          // Enhanced play function with retry logic
-          const attemptPlay = () => {
-            if (isLoading) return;
-            
-            isLoading = true;
-            setLoadingState(true);
-            
-            // Make sure audio is loaded before playing
-            if (audioEl.readyState < 2) { // HAVE_CURRENT_DATA or higher needed for playback
-              // If not loaded enough, force load
-              audioEl.load();
-              
-              // Set a timeout in case loading hangs
-              const loadTimeout = setTimeout(() => {
-                if (isLoading && loadAttempts < maxLoadAttempts) {
-                  console.warn('Audio loading timeout, retrying...');
-                  loadAttempts++;
-                  audioEl.load(); // Try loading again
-                } else if (isLoading) {
-                  // Max attempts reached, show error
-                  isLoading = false;
-                  setLoadingState(false);
-                  
-                  // Show feedback to user
-                  if (customTimestamp) {
-                    customTimestamp.textContent = 'Failed to load audio';
-                    customTimestamp.style.color = '#e74c3c';
-                  }
-                  
-                  // Optional: alert only on the last attempt
-                  if (loadAttempts >= maxLoadAttempts) {
-                    console.error('Could not load audio after multiple attempts');
-                  }
-                }
-              }, 10000); // 10 second timeout
-              
-              // Listen for canplay event
-              const canPlayHandler = () => {
-                clearTimeout(loadTimeout);
-                audioEl.removeEventListener('canplay', canPlayHandler);
-                
-                // Now we can play
-                audioEl.play().then(() => {
-                  isLoading = false;
-                  // Play state will be handled by the play event
-                }).catch(error => {
-                  console.error('Error playing audio:', error);
-                  isLoading = false;
-                  setLoadingState(false);
-                  
-                  // Check if autoplay was blocked
-                  if (error.name === 'NotAllowedError') {
-                    if (customTimestamp) {
-                      customTimestamp.textContent = 'Click play to start audio';
-                      customTimestamp.style.color = '#666';
-                    }
-                  } else {
-                    if (customTimestamp) {
-                      customTimestamp.textContent = 'Could not play audio';
-                      customTimestamp.style.color = '#e74c3c';
-                    }
-                  }
-                });
-              };
-              
-              audioEl.addEventListener('canplay', canPlayHandler);
-            } else {
-              // Audio is already loaded enough to play
-              audioEl.play().then(() => {
-                isLoading = false;
-                // Play state will be handled by the play event
-              }).catch(error => {
-                console.error('Error playing audio:', error);
-                isLoading = false;
-                setLoadingState(false);
-                
-                if (customTimestamp) {
-                  customTimestamp.textContent = 'Could not play audio';
-                  customTimestamp.style.color = '#e74c3c';
-                }
-              });
-            }
-          };
-          
-          // Play/pause toggle with enhanced error handling
-          customPlayBtn.addEventListener('click', function() {
-            if (audioEl.paused) {
-              attemptPlay();
-            } else {
-              audioEl.pause();
-            }
-          });
-          
-          // Update button state
-          audioEl.addEventListener('play', function() {
-            customPlayBtn.src = pauseImageSrc;
-            customPlayBtn.setAttribute('alt', 'Pause');
-            isLoading = false;
-            if (customProgressBar) {
-              customProgressBar.classList.remove('loading');
-            }
-          });
-          
-          audioEl.addEventListener('pause', function() {
-            customPlayBtn.src = playImageSrc;
-            customPlayBtn.setAttribute('alt', 'Play');
-          });
-          
-          audioEl.addEventListener('ended', function() {
-            customPlayBtn.src = playImageSrc;
-            customPlayBtn.setAttribute('alt', 'Play');
-          });
-          
-          // Handle loading errors
-          audioEl.addEventListener('error', function(e) {
-            console.error('Audio error:', e);
-            isLoading = false;
-            setLoadingState(false);
-            
-            if (customTimestamp) {
-              customTimestamp.textContent = 'Audio failed to load';
-              customTimestamp.style.color = '#e74c3c';
-            }
-            
-            // If we have multiple sources, try the next one
-            const sources = audioEl.querySelectorAll('source');
-            let currentSource = null;
-            
-            // Find the source that failed
-            for (let i = 0; i < sources.length; i++) {
-              if (i + 1 < sources.length && sources[i].error) {
-                currentSource = sources[i];
-                break;
-              }
-            }
-            
-            if (currentSource && loadAttempts < maxLoadAttempts) {
-              loadAttempts++;
-              console.log(`Trying next audio source. Attempt ${loadAttempts} of ${maxLoadAttempts}`);
-              audioEl.load(); // Try loading again
-            }
-          });
+        explanationAudio.controls = true;
+        explanationAudio.style.width = '100%';
+        explanationAudio.style.display = 'block';
+        explanationContainer.appendChild(explanationAudio);
+        explanationContainer.style.display = 'flex';
+        explanationContainer.style.width = '100%';
+      }
+      
+      // Handle additional audio elements if there are more than 2
+      if (audioElements.length > 2) {
+        // For any additional audio elements, just make them visible
+        for (let i = 2; i < audioElements.length; i++) {
+          const extraAudio = audioElements[i];
+          extraAudio.style.display = 'block';
+          extraAudio.style.width = '100%';
+          extraAudio.controls = true;
         }
-        
-        // Handle progress and timing
-        audioEl.addEventListener('timeupdate', function() {
-          const currentTime = formatTime(audioEl.currentTime);
-          const duration = formatTime(audioEl.duration || 0);
-          
-          if (customTimestamp) {
-            customTimestamp.textContent = `${currentTime} / ${duration}`;
-            customTimestamp.style.color = '#666';
-          }
-          
-          if (customProgressBar) {
-            const percent = ((audioEl.currentTime / audioEl.duration) || 0) * 100;
-            customProgressBar.style.background = `linear-gradient(to right, #1d72c2 ${percent}%, #e0e0e0 ${percent}%)`;
-            customProgressBar.classList.remove('loading');
-            
-            // Update progress-bar::after pseudo-element position
-            // First ensure we have the custom property in the element's style
-            customProgressBar.style.setProperty('--progress-width', `${percent}%`);
-            
-            // Add a class to indicate playing state for CSS animations
-            if (!audioEl.paused) {
-              customProgressBar.classList.add('playing');
-            } else {
-              customProgressBar.classList.remove('playing');
-            }
-          }
-        });
-        
-        // Update playing state on play/pause
-        audioEl.addEventListener('play', function() {
-          if (customProgressBar) {
-            customProgressBar.classList.add('playing');
-          }
-        });
-        
-        audioEl.addEventListener('pause', function() {
-          if (customProgressBar) {
-            customProgressBar.classList.remove('playing');
-          }
-        });
-        
-        audioEl.addEventListener('ended', function() {
-          if (customProgressBar) {
-            customProgressBar.classList.remove('playing');
-          }
-        });
-        
-        // Handle loading states
-        audioEl.addEventListener('loadedmetadata', function() {
-          if (customTimestamp) {
-            customTimestamp.textContent = `0:00 / ${formatTime(audioEl.duration || 0)}`;
-            customTimestamp.style.color = '#666';
-          }
-          
-          if (customProgressBar) {
-            customProgressBar.classList.remove('loading');
-          }
-          
-          // Preload more of the audio for smoother playback
-          if (audioEl.preload !== 'auto') {
-            audioEl.preload = 'auto';
-          }
-        });
-        
-        audioEl.addEventListener('waiting', function() {
-          if (customProgressBar) {
-            customProgressBar.classList.add('loading');
-          }
-          
-          if (customPlayBtn && customPlayBtn.getAttribute('alt') === 'Pause') {
-            const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
-            const loadingImageSrc = imgPath + 'loading.svg';
-            customPlayBtn.src = loadingImageSrc;
-            customPlayBtn.setAttribute('alt', 'Loading');
-          }
-        });
-        
-        audioEl.addEventListener('playing', function() {
-          if (customProgressBar) {
-            customProgressBar.classList.remove('loading');
-          }
-          
-          if (customPlayBtn && customPlayBtn.getAttribute('alt') === 'Loading') {
-            const imgPath = customPlayBtn.src.substring(0, customPlayBtn.src.lastIndexOf('/') + 1);
-            const pauseImageSrc = imgPath + 'pause.svg';
-            customPlayBtn.src = pauseImageSrc;
-            customPlayBtn.setAttribute('alt', 'Pause');
-          }
-        });
-        
-        // Initiate preloading of audio in the background for better user experience
-        setTimeout(() => {
-          // Low-priority task to preload audio data
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(() => {
-              if (audioEl.preload !== 'auto') {
-                audioEl.preload = 'auto';
-                audioEl.load();
-              }
-            });
-          } else {
-            // Fallback for browsers without requestIdleCallback
-            setTimeout(() => {
-              if (audioEl.preload !== 'auto') {
-                audioEl.preload = 'auto';
-                audioEl.load();
-              }
-            }, 1000);
-          }
-        }, 500);
-
-        // Interactive progress bar
-        customProgressBar.style.cursor = 'pointer';
-        customProgressBar.addEventListener('click', function(e) {
-          if (audioEl.duration) {
-            const rect = customProgressBar.getBoundingClientRect();
-            const clickPosition = (e.clientX - rect.left) / rect.width;
-            audioEl.currentTime = clickPosition * audioEl.duration;
-          }
-        });
-        
-        // Volume control
-        if (customVolumeIcon) {
-          let isMuted = false;
-          
-          // Store original volume before muting
-          let previousVolume = 1.0;
-          
-          // Get the icon paths from the current source
-          const imgPath = customVolumeIcon.src.substring(0, customVolumeIcon.src.lastIndexOf('/') + 1);
-          const volumeHighImageSrc = imgPath + 'volume-high.svg';
-          const volumeMuteImageSrc = imgPath + 'volume-mute.svg';
-          
-          // Preload both volume icons to avoid missing image issues
-          const volumeMuteImage = new Image();
-          volumeMuteImage.src = volumeMuteImageSrc;
-          
-          customVolumeIcon.addEventListener('click', function() {
-            if (isMuted) {
-              // Restore previous volume or default to full volume
-              audioEl.volume = previousVolume > 0 ? previousVolume : 1.0;
-              customVolumeIcon.src = volumeHighImageSrc;
-              customVolumeIcon.setAttribute('alt', 'Mute');
-              customVolumeIcon.setAttribute('title', 'Mute');
-              isMuted = false;
-            } else {
-              // Store current volume before muting
-              previousVolume = audioEl.volume;
-              
-              // Mute the audio
-              audioEl.volume = 0;
-              customVolumeIcon.src = volumeMuteImageSrc;
-              customVolumeIcon.setAttribute('alt', 'Unmute');
-              customVolumeIcon.setAttribute('title', 'Unmute');
-              isMuted = true;
-            }
-          });
-          
-          // Sync initial state with audio element
-          audioEl.addEventListener('loadedmetadata', function() {
-            if (audioEl.muted || audioEl.volume === 0) {
-              isMuted = true;
-              customVolumeIcon.src = volumeMuteImageSrc;
-              customVolumeIcon.setAttribute('alt', 'Unmute');
-              customVolumeIcon.setAttribute('title', 'Unmute');
-            }
-          });
-        }
-        
-        // Playback speed options
-        if (customMoreOptionsIcon) {
-          customMoreOptionsIcon.addEventListener('click', function() {
-            // Create dropdown
-            const dropdown = document.createElement('div');
-            dropdown.classList.add('audio-options-dropdown');
-            dropdown.style.position = 'absolute';
-            dropdown.style.right = '0';
-            dropdown.style.top = '30px';
-            dropdown.style.backgroundColor = '#fff';
-            dropdown.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
-            dropdown.style.borderRadius = '4px';
-            dropdown.style.padding = '8px 0';
-            dropdown.style.zIndex = '1000';
-            
-            const speedOptions = [
-              { text: '0.75x Speed', rate: 0.75 },
-              { text: '1.0x Speed', rate: 1.0 },
-              { text: '1.25x Speed', rate: 1.25 },
-              { text: '1.5x Speed', rate: 1.5 },
-              { text: '2.0x Speed', rate: 2.0 }
-            ];
-            
-            speedOptions.forEach(option => {
-              const item = document.createElement('div');
-              item.textContent = option.text;
-              item.style.padding = '8px 16px';
-              item.style.cursor = 'pointer';
-              item.style.fontSize = '14px';
-              
-              // Highlight current speed
-              if (Math.abs(audioEl.playbackRate - option.rate) < 0.01) {
-                item.style.fontWeight = 'bold';
-                item.style.backgroundColor = '#f0f0f0';
-              }
-              
-              item.addEventListener('click', function() {
-                audioEl.playbackRate = option.rate;
-                dropdown.remove();
-              });
-              
-              item.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = '#f0f0f0';
-              });
-              
-              item.addEventListener('mouseleave', function() {
-                if (Math.abs(audioEl.playbackRate - option.rate) < 0.01) {
-                  this.style.backgroundColor = '#f0f0f0';
-                } else {
-                  this.style.backgroundColor = '';
-                }
-              });
-              
-              dropdown.appendChild(item);
-            });
-            
-            // Add to DOM
-            const controls = customMoreOptionsIcon.closest('.audio-controls');
-            if (controls) {
-              controls.style.position = 'relative';
-              controls.appendChild(dropdown);
-              
-              // Handle clicking outside
-              function closeDropdown(e) {
-                if (!dropdown.contains(e.target) && e.target !== customMoreOptionsIcon) {
-                  dropdown.remove();
-                  document.removeEventListener('click', closeDropdown);
-                }
-              }
-              
-              setTimeout(() => {
-                document.addEventListener('click', closeDropdown);
-              }, 0);
-            }
-          });
-        }
-        
-        // Style container
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.width = '100%';
-        container.style.position = 'relative';
-        
-        // Hide original Ghost audio card
-        const originalCard = audioCards[index];
-        if (originalCard && originalCard.parentNode) {
-          originalCard.style.display = 'none';
-        }
-      });
+      }
     } catch (error) {
-      console.error('Error setting up custom audio players:', error);
-      // Fallback to original audio cards if there's an error
-      audioCards.forEach(card => {
-        if (card && card.parentNode) {
-          card.style.display = 'block';
-        }
+      console.error('Error moving audio elements to frames:', error);
+      // Make sure all audio elements are visible in case of error
+      audioElements.forEach(audio => {
+        audio.style.display = 'block';
+        audio.controls = true;
       });
     }
   }
