@@ -1084,7 +1084,7 @@ body,
   
   .footer-logo, 
   .footer-column {
-    align-items: flex-start;
+    align-items: center;
   }
   
   .social-title, 
