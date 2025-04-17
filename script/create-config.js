@@ -9,6 +9,29 @@ dotenv.config();
 
 const configPath = path.join(__dirname, '..', 'config.production.json');
 
+function parseCloudinaryUrl(cloudinaryUrl) {
+  if (!cloudinaryUrl) {
+    throw new Error('CLOUDINARY_URL is not defined');
+  }
+
+  // Updated regex to handle special characters in API keys, secrets, and cloud names
+  // This pattern accepts any characters in the key, secret, and name parts
+  const regex = /^cloudinary:\/\/([^:]+):([^@]+)@(.+)$/;
+  const match = cloudinaryUrl.match(regex);
+
+  if (!match) {
+    throw new Error('Invalid CLOUDINARY_URL format');
+  }
+
+  const [, api_key, api_secret, cloud_name] = match;
+
+  return {
+    cloud_name,
+    api_key,
+    api_secret
+  };
+}
+
 function createConfig() {
   const config = {
     url: process.env.PUBLIC_URL,
@@ -58,9 +81,31 @@ function createConfig() {
   // Cloudinary configuration
   if (process.env.CLOUDINARY_URL) {
     console.log('CLOUDINARY_URL found, setting storage to cloudinary');
+    // get cloud_name, api_key, api_secret from CLOUDINARY_URL
+    const { cloud_name, api_key, api_secret } = parseCloudinaryUrl(process.env.CLOUDINARY_URL);
+
+     // test the connection to cloudinary
+     const cloudinary = require('cloudinary').v2;
+     cloudinary.config({
+       cloud_name,
+       api_key,
+       api_secret
+     });
+     cloudinary.api.ping()
+       .then(() => {
+         console.log('Cloudinary connection successful');
+       })
+       .catch((error) => {
+         console.error('Error connecting to Cloudinary:', error);
+       });
+
     config.storage = {
       active: 'cloudinary',
       cloudinary: {
+        cloud_name,
+        api_key,
+        api_secret,
+        secure: true,
         useDatedFolder: false,
         upload: {
           use_filename: true,
@@ -76,6 +121,7 @@ function createConfig() {
         }
       }
     };
+    
   } else {
     console.log('CLOUDINARY_URL not found, setting storage to local');
     // config.storage = {
