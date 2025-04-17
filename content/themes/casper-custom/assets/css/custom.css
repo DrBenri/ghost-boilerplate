@@ -468,6 +468,10 @@ body,
   margin: 0;
 }
 
+.custom-canvas {
+  margin: 16px 0px;
+}
+
 .inner {
   width: 100%;
   max-width: var(--container-width);
