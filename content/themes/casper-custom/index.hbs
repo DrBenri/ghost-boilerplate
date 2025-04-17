@@ -68,18 +68,24 @@ into the {body} of the default.hbs template --}}
             </div>
         </div>
         
-        {{#foreach posts}}
-            <div class="post-item">
-                <div class="post-date">{{date published_at format="YYYY年MM月DD日"}}</div>
-                <div class="post-content">
-                    <div class="post-title">{{title}}</div>
-                    <div class="post-excerpt">
-                        {{excerpt}}
+        {{#get "posts" filter="tag:sabcs-2024" include="tags" limit="all"}}
+            {{#foreach posts}}
+                <div class="post-item">
+                    <div class="post-date">{{date published_at format="YYYY年MM月DD日"}}</div>
+                    <div class="post-content">
+                        <div class="post-title">{{title}}</div>
+                        <div class="post-excerpt">
+                            {{excerpt}}
+                        </div>
+                        <a href="{{url}}" class="read-more-button">全文を読む</a>
                     </div>
-                    <a href="{{url}}" class="read-more-button">全文を読む</a>
                 </div>
+            {{/foreach}}
+        {{else}}
+            <div class="no-posts">
+                <p>現在、この条件に該当する投稿はありません。</p>
             </div>
-        {{/foreach}}
+        {{/get}}
     </div>
 
 </div>

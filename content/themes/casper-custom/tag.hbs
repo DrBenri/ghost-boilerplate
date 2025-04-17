@@ -1,55 +1,90 @@
 {{!< default}}
-{{!-- The tag above means - insert everything in this file into the {body} of the default.hbs template --}}
+{{!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template --}}
 
+<div class="banner">
+  <div class="index-header"></div>
+  <div class="banner-container">
+    <div class="banner-content-wrapper">
+      <div class="banner-image-wrapper">
+        {{#if @site.cover_image}}
+          <img class="banner-image"
+               srcset="{{img_url @site.cover_image size="s"}} 300w,
+                      {{img_url @site.cover_image size="m"}} 600w,
+                      {{img_url @site.cover_image size="l"}} 1000w"
+               sizes="(max-width: 576px) 97px, (max-width: 768px) 280px, 308px"
+               src="{{img_url @site.cover_image size="m"}}"
+               alt="{{@site.title}}"
+          />
+        {{else}}
+          <div class="banner-image-placeholder"></div>
+        {{/if}}
+        <div class="banner-image-caption">
+            <div class="banner-person-name">佐治重衡先生</div>
+            <div>福島県立医科大学 医学部</div>
+            <div>腫瘍内科学講座 主任教授</div>
+        </div>
+      </div>
+      <div class="banner-person-title-wrapper">
+        
+      </div>
+    </div>
+    <div class="banner-content">
+      <div class="banner-meta">
+        <div class="banner-tag-container">
+          <div class="banner-tag">解説</div>
+        </div>
+        <div class="banner-date">{{date format="YYYY年MM月DD日"}}</div>
+      </div>
+      <div class="banner-title-container">
+        <div class="banner-title">{{tag.name}}</div>
+        <div class="banner-subtitle">佐治重衡先生の解説</div>
+      </div>
+      
+      <!-- Add mobile-specific person name that appears only in mobile view -->
+      <div class="mobile-banner-image-caption">
+        佐治重衡先生
+        </br>
+        </br>
+        福島県立医科大学 医学部
+        </br>
+        腫瘍内科学講座 主任教授
+      </div>
+    </div>
+    <div class="banner-decoration">
+      {{> "icons/logo-svg"}}
+    </div>
+  </div>
+</div>
+
+{{!-- The main content area with new design --}}
 <main id="site-main" class="site-main outer">
-<div class="inner posts">
-    <div class="post-feed">
+<div class="inner">
 
-        {{#tag}}
-        <section class="post-card post-card-large">
-
-            {{#if feature_image}}
-            <div class="post-card-image-link">
-                {{!-- This is a responsive image, it loads different sizes depending on device
-                https://medium.freecodecamp.org/a-guide-to-responsive-images-with-ready-to-use-templates-c400bd65c433 --}}
-                <img class="post-card-image"
-                    srcset="{{img_url feature_image size="s"}} 300w,
-                            {{img_url feature_image size="m"}} 600w,
-                            {{img_url feature_image size="l"}} 1000w,
-                            {{img_url feature_image size="xl"}} 2000w"
-                    sizes="(max-width: 1000px) 400px, 800px"
-                    src="{{img_url feature_image size="m"}}"
-                    alt="{{title}}"
-                />
+    <div class="container">
+        <div class="post-feed-header">
+            <div class="post-feed-header-content">
+                <div class="post-feed-title">{{tag.slug}}の記事一覧</div>
             </div>
-            {{/if}}
-
-            <div class="post-card-content">
-            <div class="post-card-content-link">
-                <header class="post-card-header tag-header">
-                    <h2 class="post-card-title">{{name}}</h2>
-                </header>
-                <div class="post-card-excerpt">
-                    {{#if description}}
-                        {{description}}
-                    {{else}}
-                        A collection of {{plural ../pagination.total empty='zero posts' singular='% post' plural='% posts'}}
-                    {{/if}}
+        </div>
+        
+        {{#foreach posts}}
+            <div class="post-item">
+                <div class="post-date">{{date published_at format="YYYY年MM月DD日"}}</div>
+                <div class="post-content">
+                    <div class="post-title">{{title}}</div>
+                    <div class="post-excerpt">
+                        {{excerpt}}
+                    </div>
+                    <a href="{{url}}" class="read-more-button">全文を読む</a>
                 </div>
             </div>
+        {{else}}
+            <div class="no-posts">
+                <p>現在、この条件に該当する投稿はありません。</p>
             </div>
-
-        </section>
-        {{/tag}}
-
-        {{#foreach posts}}
-            {{!-- The tag below includes the markup for each post - partials/post-card.hbs --}}
-            {{> "post-card"}}
         {{/foreach}}
-
     </div>
 
-    {{pagination}}
-    
 </div>
 </main>
