@@ -7,22 +7,24 @@ into the {body} of the default.hbs template --}}
   <div class="banner-container">
     <div class="banner-content-wrapper">
       <div class="banner-image-wrapper">
-        {{#if @site.cover_image}}
+        {{#if tag.feature_image}}
           <img class="banner-image"
-               srcset="{{img_url @site.cover_image size="s"}} 300w,
-                      {{img_url @site.cover_image size="m"}} 600w,
-                      {{img_url @site.cover_image size="l"}} 1000w"
+               srcset="{{img_url tag.feature_image size="s"}} 300w,
+                      {{img_url tag.feature_image size="m"}} 600w,
+                      {{img_url tag.feature_image size="l"}} 1000w"
                sizes="(max-width: 576px) 97px, (max-width: 768px) 280px, 308px"
-               src="{{img_url @site.cover_image size="m"}}"
-               alt="{{@site.title}}"
+               src="{{img_url tag.feature_image size="m"}}"
+               alt="{{tag.name}}"
           />
         {{else}}
           <div class="banner-image-placeholder"></div>
         {{/if}}
         <div class="banner-image-caption">
-            <div class="banner-person-name">佐治重衡先生</div>
-            <div>福島県立医科大学 医学部</div>
-            <div>腫瘍内科学講座 主任教授</div>
+            {{#if tag.description}}
+                <div>{{{tag.description}}}</div>
+            {{else}}
+                <div>タグの説明がありません</div>
+            {{/if}}
         </div>
       </div>
       <div class="banner-person-title-wrapper">
