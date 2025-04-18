@@ -372,6 +372,7 @@
 
   .content-row {
     flex-direction: column;
+    padding: 0 8px;
   }
   
   .column2, .column3, .summary-sidebar, .explanation-sidebar {
