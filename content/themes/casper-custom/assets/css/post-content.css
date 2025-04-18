@@ -405,6 +405,66 @@
   }
 }
 
+/* Add mobile-specific styles for even tighter spacing */
+@media (max-width: 768px) {
+  .column2 {
+    gap: 0px;
+  }
+  
+  .block {
+    gap: 0px;
+    margin-bottom: 10px;
+  }
+  
+  .title2 {
+    margin-bottom: 3px;
+  }
+  
+  /* Further reduce spacing between elements for mobile */
+  .column2 > div {
+    margin-bottom: 10px;
+  }
+  
+  /* Hide breadcrumb navigation on mobile devices */
+  .breadcrumb-nav {
+    display: none;
+  }
+  
+  /* Tighter spacing in explanation content for mobile */
+  .block2 {
+    padding: 12px;
+    gap: 0px;
+  }
+  
+  /* Adjust text sizes for better mobile readability */
+  .summary-content, .explanation-content {
+    font-size: 15px;
+    line-height: 28px;
+  }
+  
+  /* Reduce padding in content sections */
+  .content {
+    padding: 6px 8px;
+  }
+  
+  /* Reduce spacing in expert profiles */
+  .frame-21, .frame-27 {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+  
+  /* Tighten avatar spacing */
+  .ava {
+    gap: 10px;
+  }
+  
+  /* Reduce title sizes for mobile */
+  .div3 {
+    font-size: 18px;
+    line-height: 22px;
+  }
+}
+
 /* Audio player button styles */
 .play-button {
   flex-shrink: 0;

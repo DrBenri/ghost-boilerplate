@@ -466,6 +466,9 @@ document.addEventListener('DOMContentLoaded', function() {
           extraAudio.controls = true;
         }
       }
+      
+      // Clean up any remaining audio cards or elements in content sections
+      cleanupAudioFromContent();
     } catch (error) {
       console.error('Error moving audio elements to frames:', error);
       // Make sure all audio elements are visible in case of error
@@ -474,6 +477,37 @@ document.addEventListener('DOMContentLoaded', function() {
         audio.controls = true;
       });
     }
+  }
+  
+  // Helper function to clean up audio elements from content
+  function cleanupAudioFromContent() {
+    // Select all content sections to clean
+    const contentSections = [
+      document.querySelector('.summary-content'),
+      document.querySelector('.explanation-content')
+    ];
+    
+    contentSections.forEach(section => {
+      if (!section) return;
+      
+      // Remove Ghost audio cards from content
+      const audioCards = section.querySelectorAll('.kg-card.kg-audio-card');
+      audioCards.forEach(card => {
+        card.remove(); // Completely remove the card
+      });
+      
+      // Remove any remaining audio elements
+      const remainingAudio = section.querySelectorAll('audio');
+      remainingAudio.forEach(audio => {
+        audio.remove(); // Remove any remaining audio elements
+      });
+      
+      // Remove any figure elements that might have contained audio
+      const audioFigures = section.querySelectorAll('figure.kg-audio-card');
+      audioFigures.forEach(figure => {
+        figure.remove();
+      });
+    });
   }
   
   // Helper function to format time in MM:SS format
