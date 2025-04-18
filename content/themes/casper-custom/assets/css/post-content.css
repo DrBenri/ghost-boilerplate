@@ -38,7 +38,7 @@
   height: 52px;
   position: relative;
 }
-._2024-11-23 {
+.date-format {
   color: var(--neutral-04, #808080);
   text-align: left;
   font-family: "NotoSansJp-Regular", sans-serif;
@@ -95,15 +95,7 @@
   overflow: visible;
   aspect-ratio: 1;
 }
-.div2 {
-  color: var(--primary-05, #203aa6);
-  text-align: left;
-  font-family: "NotoSansJp-Medium", sans-serif;
-  font-size: 18px;
-  line-height: 32px;
-  font-weight: 500;
-  position: relative;
-}
+
 .arrow-right2 {
   flex-shrink: 0;
   width: 18px;
@@ -200,55 +192,7 @@
   flex-direction: column;
   justify-content: flex-start;
 }
-.frame-21, .frame-27 {
-  background: var(--neutral-01, #f8f8f8);
-  border-radius: 12px 0px 0px 12px;
-  border-style: solid;
-  border-color: var(--neutral-02, #cacaca);
-  border-width: 1px;
-  padding: 24px 20px 24px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  width: 100%;
-  position: static;
-  margin-top: 0;
-}
-.frame-21 {
-  position: static;
-  margin-top: 0;
-  width: 100%;
-  border-radius: 12px;
-}
-.frame-27 {
-  width: 100%;
-  border-radius: 12px;
-  margin-top: 0; /* This creates spacing to align with the explanation section */
-}
-.ava {
-  display: flex;
-  flex-direction: row;
-  gap: 17px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.ellipse-1 {
-  border-radius: 50%;
-  border-style: solid;
-  border-color: var(--primary-04, #113ef9);
-  border-width: 1px;
-  flex-shrink: 0;
-  width: 60px;
-  height: 60px;
-  position: relative;
-  object-fit: cover;
-  aspect-ratio: 1;
-}
+
 .text {
   display: flex;
   flex-direction: column;
@@ -259,26 +203,7 @@
   width: 280px;
   position: relative;
 }
-.div3 {
-  color: var(--neutral-06, #4d4d4d);
-  text-align: left;
-  font-family: "NotoSansJp-Medium", sans-serif;
-  font-size: 20px;
-  line-height: 24px;
-  font-weight: 500;
-  position: relative;
-  align-self: stretch;
-}
-.div4 {
-  color: var(--neutral-04, #808080);
-  text-align: left;
-  font-family: "NotoSansJp-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-}
+
 
 .explanation-expert {
   margin-top: 30px;
@@ -355,10 +280,6 @@
     width: 100%;
   }
   
-  .frame-21, .frame-27 {
-    width: 100%;
-    border-radius: 12px;
-  }
   
   .explanation-expert {
     width: 100%;
@@ -367,11 +288,6 @@
 
   .explanation-block {
     margin-top: 30px;
-  }
-
-  .frame-21, .frame-27 {
-    position: static;
-    margin-top: 0;
   }
 
   .content-row {
@@ -450,23 +366,6 @@
   /* Reduce padding in content sections */
   .content {
     padding: 6px 8px;
-  }
-  
-  /* Reduce spacing in expert profiles */
-  .frame-21, .frame-27 {
-    padding: 16px 12px;
-    gap: 12px;
-  }
-  
-  /* Tighten avatar spacing */
-  .ava {
-    gap: 10px;
-  }
-  
-  /* Reduce title sizes for mobile */
-  .div3 {
-    font-size: 18px;
-    line-height: 22px;
   }
 }
 
