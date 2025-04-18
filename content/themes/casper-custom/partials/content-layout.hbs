@@ -47,13 +47,8 @@
           <div class="expert-avatar">
             <img class="avatar-image" src="{{#if tags.[1].feature_image}} {{tags.[1].feature_image}} {{else}} {{#if primary_tag.feature_image}} {{primary_tag.feature_image}} {{else}} {{asset "images/expert1.png"}} {{/if}} {{/if}}" alt="{{#if tags.[1].name}} {{tags.[1].name}} {{else}} {{#if primary_tag.name}} {{primary_tag.name}} {{else}} エリン・コベイン先生 {{/if}} {{/if}}" />
             <div class="expert-info">
-              <div class="expert-name">エリン・コベイン先生</div>
               <div class="expert-title">
-                准教授 ミシガン大学ローゲルがんセンター
-                <br />
-                乳がん腫瘍クリニック
-                <br />
-                医療腫瘍学・内科学
+                {{#if tags.[1].description}} {{{tags.[1].description}}} {{else if primary_tag.description}} {{{primary_tag.description}}} {{else}} 免疫学者<br />アメリカ国立衛生研究所<br />国立がん研究所 {{/if}}
               </div>
             </div>
           </div>
@@ -86,14 +81,7 @@
           <div class="expert-avatar">
             <img class="avatar-image" src="{{#if primary_tag.feature_image}}{{primary_tag.feature_image}}{{else}}{{asset "images/expert2.png"}}{{/if}}" alt="{{#if primary_tag.name}}{{primary_tag.name}}{{else}}佐治重衡先生{{/if}}" />
             <div class="expert-info">
-              <div class="expert-name">佐治重衡先生</div>
-              <div class="expert-title">
-                主任教授
-                <br />
-                福島県立医科大学 医学部
-                <br />
-                腫瘍内科学講座
-              </div>
+              <div class="expert-title">{{#if primary_tag.description}}{{{primary_tag.description}}}{{else}}主任教授<br />福島県立医科大学 医学部<br />腫瘍内科学講座{{/if}}</div>
             </div>
           </div>
           <div class="audio-container explanation-audio" id="explanation-audio-container">

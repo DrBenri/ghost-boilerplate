@@ -332,6 +332,10 @@
   margin-bottom: 30px;
 }
 
+.banner-person-name {
+  color: var(--neutral-06, #4d4d4d);
+}
+
 
 .content-row {
   display: flex;
