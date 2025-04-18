@@ -45,7 +45,7 @@
         {{! Expert 1 }}
         <div class="expert-profile">
           <div class="expert-avatar">
-            <img class="avatar-image" src="{{asset "images/expert1.png"}}" alt="エリン・コベイン先生" />
+            <img class="avatar-image" src="{{#if primary_tag.feature_image}}{{primary_tag.feature_image}}{{else}}{{asset "images/expert1.png"}}{{/if}}" alt="{{#if primary_tag.name}}{{primary_tag.name}}{{else}}エリン・コベイン先生{{/if}}" />
             <div class="expert-info">
               <div class="expert-name">エリン・コベイン先生</div>
               <div class="expert-title">
@@ -84,7 +84,7 @@
         {{! Expert 2 }}
         <div class="expert-profile">
           <div class="expert-avatar">
-            <img class="avatar-image" src="{{asset "images/expert2.png"}}" alt="佐治重衡先生" />
+            <img class="avatar-image" src="{{#if primary_tag.feature_image}}{{primary_tag.feature_image}}{{else}}{{asset "images/expert2.png"}}{{/if}}" alt="{{#if primary_tag.name}}{{primary_tag.name}}{{else}}佐治重衡先生{{/if}}" />
             <div class="expert-info">
               <div class="expert-name">佐治重衡先生</div>
               <div class="expert-title">
