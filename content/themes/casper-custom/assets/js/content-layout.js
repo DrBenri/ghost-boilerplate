@@ -270,83 +270,71 @@ document.addEventListener('DOMContentLoaded', function() {
       // Original content HTML
       const html = content.innerHTML;
       
-      // Create a temporary div to parse the HTML
+      // Create a temporary div for safer HTML parsing
       const tempDiv = document.createElement('div');
       tempDiv.innerHTML = html;
       
-      // Hide all audio cards in the content before processing
-      tempDiv.querySelectorAll('.kg-card.kg-audio-card').forEach(card => {
-        card.style.display = 'none';
-      });
-      
-      // Find all headings
+      // Find the explanation section using common heading patterns
       const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      let explanationStartNode = null;
+      let summaryHTML = '';
+      let explanationHTML = '';
       
-      let summaryContent = '';
-      let explanationContent = '';
-      let currentSection = '';
-      
-      if (headings.length === 0) {
-        // No headings found, use all content as summary
-        summaryContent = html;
-      } else {
-        // Process content by headings
-        headings.forEach(heading => {
-          const headingText = heading.textContent.trim().toLowerCase();
-          
-          // Determine section based on heading text
-          if (headingText.includes('要約') || headingText.includes('summary')) {
-            currentSection = 'summary';
-          } else if (headingText.includes('解説') || headingText.includes('explanation')) {
-            currentSection = 'explanation';
-          }
-          
-          // Skip if no section determined yet
-          if (!currentSection) return;
-          
-          // Include the heading itself in the appropriate section
-          if (currentSection === 'summary') {
-            summaryContent += heading.outerHTML;
-          } else if (currentSection === 'explanation') {
-            explanationContent += heading.outerHTML;
-          }
-          
-          // Collect content until next heading
-          let nextElement = heading.nextElementSibling;
-          while (nextElement && !['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(nextElement.tagName)) {
-            if (currentSection === 'summary') {
-              summaryContent += nextElement.outerHTML;
-            } else if (currentSection === 'explanation') {
-              explanationContent += nextElement.outerHTML;
-            }
-            
-            const currentElement = nextElement;
-            nextElement = nextElement.nextElementSibling;
-            
-            // Handle case where we've reached the end of content
-            if (!nextElement) break;
-          }
-        });
-        
-        // If no summary section was found, use the first few paragraphs
-        if (!summaryContent) {
-          const paragraphs = tempDiv.querySelectorAll('p');
-          for (let i = 0; i < Math.min(3, paragraphs.length); i++) {
-            summaryContent += paragraphs[i].outerHTML;
-          }
+      // Look for headings that indicate the start of explanation section
+      for (const heading of headings) {
+        const headingText = heading.textContent.trim().toLowerCase();
+        // Match both Japanese "解説" and English "explanation"
+        if (headingText.includes('解説') || headingText.includes('explanation')) {
+          explanationStartNode = heading;
+          break;
         }
       }
       
-      // Update the content areas
-      content.innerHTML = summaryContent || html;
-      explanation.innerHTML = explanationContent || '';
+      // If we found an explanation heading, use it to split content
+      if (explanationStartNode) {
+        // Get all content before the explanation heading for summary
+        let currentNode = tempDiv.firstChild;
+        while (currentNode && currentNode !== explanationStartNode) {
+          summaryHTML += currentNode.outerHTML || '';
+          currentNode = currentNode.nextSibling;
+        }
+        
+        // Get all content from the explanation heading onwards
+        while (currentNode) {
+          explanationHTML += currentNode.outerHTML || '';
+          currentNode = currentNode.nextSibling;
+        }
+      } else {
+        // Fallback: Try simple text-based split if no heading found
+        const contentParts = html.split(/<[^>]*>解説<\/[^>]*>|<[^>]*>Explanation<\/[^>]*>/i);
+        if (contentParts.length > 1) {
+          summaryHTML = contentParts[0];
+          explanationHTML = contentParts.slice(1).join('');
+        } else {
+          // If no split possible, use all content as summary
+          summaryHTML = html;
+        }
+      }
       
-      // After setting content, ensure all audio cards in both sections are hidden
-      document.querySelectorAll('.summary-content .kg-card.kg-audio-card, .explanation-content .kg-card.kg-audio-card').forEach(card => {
-        card.style.display = 'none';
-      });
+      // Update the content areas with processed HTML
+      content.innerHTML = summaryHTML || html;
+
+      //remove 解説 tag from explanation
+      explanationHTML = explanationHTML.replace(/<[^>]*>解説<\/[^>]*>/i, '');
+      explanation.innerHTML = explanationHTML || '';
+      
+      // Clean up all audio elements from both sections
+      cleanupAudioFromContent();
     } catch (error) {
       console.error('Error parsing content sections:', error);
+      // Fallback in case of errors - just display all content in summary
+      if (content && explanation) {
+        explanation.innerHTML = '';
+        // Still hide audio elements
+        document.querySelectorAll('.kg-card.kg-audio-card').forEach(card => {
+          card.style.display = 'none';
+        });
+      }
     }
   }
   
